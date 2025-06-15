@@ -23,7 +23,7 @@ export default function Hero({ backgroundStyle, isAnimated, children }: HeroProp
       
       {/* Content - Just the subheader now, positioned closer to controls with more space from toggle */}
       <div className="relative z-10 text-center max-w-4xl mx-auto px-6 mb-3 mt-20">
-        <p className="text-lg md:text-xl mb-4 leading-relaxed max-w-2xl mx-auto text-white font-bold drop-shadow-lg" style={{ fontFamily: 'var(--font-josefin-sans), sans-serif' }}>
+        <p className="text-lg md:text-xl mb-4 leading-relaxed max-w-2xl mx-auto text-white font-extrabold drop-shadow-lg" style={{ fontFamily: 'sans-serif' }}>
           Create, preview, and export customizable CSS backgrounds in seconds.
         </p>
       </div>
