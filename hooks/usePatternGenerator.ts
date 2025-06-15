@@ -129,7 +129,7 @@ export function usePatternGenerator() {
       willChange: 'background-image, background-position',
       // Ensure proper color rendering
       imageRendering: 'crisp-edges',
-      WebkitImageRendering: 'crisp-edges',
+      
     };
 
     // Add background size for certain patterns
