@@ -80,6 +80,17 @@ export function useGradientGenerator() {
       backgroundImage: pattern,
       opacity: opacity / 100,
       transition: 'all 0.3s ease-in-out',
+      // Improved rendering properties
+      backgroundAttachment: 'fixed',
+      backgroundRepeat: 'no-repeat',
+      backgroundPosition: 'center',
+      backgroundSize: '100% 100%',
+      // Prevent rendering artifacts
+      isolation: 'isolate',
+      transform: 'translateZ(0)',
+      willChange: 'background-image, background-position, transform',
+      // Ensure proper color rendering
+      imageRendering: 'crisp-edges', // Replace WebkitImageRendering
     };
 
     // Add animation if enabled - make it continuous
