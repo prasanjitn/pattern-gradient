@@ -12,13 +12,13 @@ interface Pattern {
 
 export function usePatternGenerator() {
   const [patterns, setPatterns] = useState<Pattern[]>([]);
-  const [selectedPattern, setSelectedPattern] = useState('dots'); // Changed to dots (polka dots)
-  const [foregroundColor, setForegroundColor] = useState('#254ef4'); // Changed to requested color
-  const [backgroundColor, setBackgroundColor] = useState('#f0fff1'); // Changed to requested color
-  const [opacity, setOpacity] = useState(100); // Changed to 100%
-  const [spacing, setSpacing] = useState(30); // Changed to 30px
+  const [selectedPattern, setSelectedPattern] = useState('dots');
+  const [foregroundColor, setForegroundColor] = useState('#254ef4');
+  const [backgroundColor, setBackgroundColor] = useState('#f0fff1');
+  const [opacity, setOpacity] = useState(100);
+  const [spacing, setSpacing] = useState(30);
   const [isAnimated, setIsAnimated] = useState(false);
-  const [animationSpeed, setAnimationSpeed] = useState(10); // Changed to 10
+  const [animationSpeed, setAnimationSpeed] = useState(10);
   const [animationDirection, setAnimationDirection] = useState('normal');
 
   // Load patterns from JSON
@@ -38,11 +38,11 @@ export function usePatternGenerator() {
         // Fallback patterns in case of error
         setPatterns([
           {
-            id: 'stripes',
-            name: 'Diagonal Stripes',
-            type: 'linear-gradient',
-            description: 'Classic diagonal stripe pattern',
-            basePattern: 'repeating-linear-gradient(45deg, {fg} 0px, {fg} {spacing}px, {bg} {spacing}px, {bg} {doubleSpacing}px)'
+            id: 'dots',
+            name: 'Polka Dots',
+            type: 'radial-gradient',
+            description: 'Circular dot pattern',
+            basePattern: 'radial-gradient(circle at {spacing}px {spacing}px, {fg} 2px, transparent 2px)'
           }
         ]);
       });
@@ -70,17 +70,17 @@ export function usePatternGenerator() {
 
   // Reset function
   const reset = () => {
-    setSelectedPattern('dots'); // Changed to dots
-    setForegroundColor('#254ef4'); // Changed to requested color
-    setBackgroundColor('#f0fff1'); // Changed to requested color
-    setOpacity(100); // Changed to 100%
-    setSpacing(30); // Changed to 30px
+    setSelectedPattern('dots');
+    setForegroundColor('#254ef4');
+    setBackgroundColor('#f0fff1');
+    setOpacity(100);
+    setSpacing(30);
     setIsAnimated(false);
-    setAnimationSpeed(10); // Changed to 10
+    setAnimationSpeed(10);
     setAnimationDirection('normal');
   };
 
-  // Generate background style
+  // Generate background style with improved rendering
   const backgroundStyle = useMemo(() => {
     const currentPattern = patterns.find(p => p.id === selectedPattern);
     if (!currentPattern) return { backgroundColor: '#ffffff' };
@@ -97,6 +97,17 @@ export function usePatternGenerator() {
       backgroundImage: pattern,
       opacity: opacity / 100,
       transition: 'all 0.3s ease-in-out',
+      // Improved rendering properties
+      backgroundAttachment: 'fixed',
+      backgroundRepeat: 'repeat',
+      backgroundPosition: 'center',
+      // Prevent rendering artifacts
+      isolation: 'isolate',
+      transform: 'translateZ(0)',
+      willChange: 'background-image, background-position',
+      // Ensure proper color rendering
+      imageRendering: 'crisp-edges',
+      WebkitImageRendering: 'crisp-edges',
     };
 
     // Add background size for certain patterns
@@ -106,10 +117,12 @@ export function usePatternGenerator() {
       style.backgroundSize = `${spacing * 2}px ${spacing * 2}px`;
     }
 
-    // Add animation if enabled - make it continuous
+    // Add animation if enabled - improved for smoother rendering
     if (isAnimated) {
-      const duration = 21 - animationSpeed; // Convert speed (1-20) to duration (20s-1s)
+      const duration = 21 - animationSpeed;
       style.animation = `patternMove ${duration}s linear infinite ${animationDirection}`;
+      // Optimize for animation
+      style.willChange = 'background-position, transform';
     }
 
     return style;
@@ -140,6 +153,9 @@ export function usePatternGenerator() {
 
     css += `\n  opacity: ${opacity / 100};`;
     css += `\n  transition: all 0.3s ease-in-out;`;
+    css += `\n  background-attachment: fixed;`;
+    css += `\n  background-repeat: repeat;`;
+    css += `\n  background-position: center;`;
 
     if (isAnimated) {
       const duration = 21 - animationSpeed;

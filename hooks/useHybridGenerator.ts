@@ -28,7 +28,7 @@ export function useHybridGenerator() {
   const [gradientColor2, setGradientColor2] = useState('#0abde3');
   const [gradientColor3, setGradientColor3] = useState('#54a0ff');
   const [gradientColor4, setGradientColor4] = useState('#feca57');
-  const [patternOpacity, setPatternOpacity] = useState(63); // ~a1 in hex
+  const [patternOpacity, setPatternOpacity] = useState(63);
   const [gradientOpacity, setGradientOpacity] = useState(54);
   const [spacing, setSpacing] = useState(5);
   const [gradientAngle, setGradientAngle] = useState(0);
@@ -125,14 +125,14 @@ export function useHybridGenerator() {
     setAnimationDirection('normal');
   };
 
-  // Generate background style - Fixed to work like gradient panel
+  // Generate background style with improved rendering
   const backgroundStyle = useMemo(() => {
     const currentPattern = patterns.find(p => p.id === selectedPattern);
     const currentGradient = gradients.find(g => g.id === selectedGradient);
     
     if (!currentPattern || !currentGradient) return { backgroundColor: '#ffffff' };
 
-    // Generate gradient (background layer) - exactly like gradient panel
+    // Generate gradient (background layer)
     let gradient = currentGradient.basePattern
       .replace(/{color1}/g, gradientColor1)
       .replace(/{color2}/g, gradientColor2)
@@ -160,29 +160,50 @@ export function useHybridGenerator() {
 
     const style: React.CSSProperties = {
       backgroundColor: '#ffffff',
-      // Pattern as overlay, gradient as background - same order as gradient panel
+      // Pattern as overlay, gradient as background
       backgroundImage: `${patternWithOpacity}, ${gradient}`,
-      opacity: gradientOpacity / 100, // Apply gradient opacity to the whole element
+      opacity: gradientOpacity / 100,
       transition: 'all 0.3s ease-in-out',
+      // Improved rendering properties
+      backgroundAttachment: 'fixed',
+      backgroundRepeat: 'repeat, no-repeat',
+      backgroundPosition: 'center, center',
+      // Prevent rendering artifacts
+      isolation: 'isolate',
+      transform: 'translateZ(0)',
+      willChange: 'background-image, background-position, transform',
+      // Ensure proper color rendering
+      imageRendering: 'crisp-edges',
+      WebkitImageRendering: 'crisp-edges',
     };
 
     // Add background size for certain patterns
     if (selectedPattern === 'dots' || selectedPattern === 'grid') {
-      style.backgroundSize = `${spacing}px ${spacing}px, 400% 400%`;
+      style.backgroundSize = `${spacing}px ${spacing}px, 100% 100%`;
     } else if (selectedPattern === 'hexagon' || selectedPattern === 'circles') {
-      style.backgroundSize = `${spacing * 2}px ${spacing * 2}px, 400% 400%`;
+      style.backgroundSize = `${spacing * 2}px ${spacing * 2}px, 100% 100%`;
     } else {
-      style.backgroundSize = 'auto, 400% 400%';
+      style.backgroundSize = 'auto, 100% 100%';
     }
 
-    // Add animation if enabled - same as gradient panel
+    // Add animation if enabled - improved for smoother rendering
     if (isAnimated) {
       const duration = 21 - animationSpeed;
       if (currentGradient.type === 'conic-gradient') {
         style.animation = `gradientSpin ${duration}s linear infinite ${animationDirection}`;
       } else {
         style.animation = `gradientShift ${duration}s ease-in-out infinite ${animationDirection}`;
+        // Update background size for animation
+        if (selectedPattern === 'dots' || selectedPattern === 'grid') {
+          style.backgroundSize = `${spacing}px ${spacing}px, 400% 400%`;
+        } else if (selectedPattern === 'hexagon' || selectedPattern === 'circles') {
+          style.backgroundSize = `${spacing * 2}px ${spacing * 2}px, 400% 400%`;
+        } else {
+          style.backgroundSize = 'auto, 400% 400%';
+        }
       }
+      // Optimize for animation
+      style.willChange = 'background-position, transform';
     }
 
     return style;
@@ -227,15 +248,18 @@ export function useHybridGenerator() {
 
     // Add background size for certain patterns
     if (selectedPattern === 'dots' || selectedPattern === 'grid') {
-      css += `\n  background-size: ${spacing}px ${spacing}px, 400% 400%;`;
+      css += `\n  background-size: ${spacing}px ${spacing}px, 100% 100%;`;
     } else if (selectedPattern === 'hexagon' || selectedPattern === 'circles') {
-      css += `\n  background-size: ${spacing * 2}px ${spacing * 2}px, 400% 400%;`;
+      css += `\n  background-size: ${spacing * 2}px ${spacing * 2}px, 100% 100%;`;
     } else {
-      css += `\n  background-size: auto, 400% 400%;`;
+      css += `\n  background-size: auto, 100% 100%;`;
     }
 
     css += `\n  opacity: ${gradientOpacity / 100};`;
     css += `\n  transition: all 0.3s ease-in-out;`;
+    css += `\n  background-attachment: fixed;`;
+    css += `\n  background-repeat: repeat, no-repeat;`;
+    css += `\n  background-position: center, center;`;
 
     if (isAnimated) {
       const duration = 21 - animationSpeed;
@@ -243,6 +267,14 @@ export function useHybridGenerator() {
         css += `\n  animation: gradientSpin ${duration}s linear infinite ${animationDirection};`;
       } else {
         css += `\n  animation: gradientShift ${duration}s ease-in-out infinite ${animationDirection};`;
+        // Update background size for animation
+        if (selectedPattern === 'dots' || selectedPattern === 'grid') {
+          css += `\n  background-size: ${spacing}px ${spacing}px, 400% 400%;`;
+        } else if (selectedPattern === 'hexagon' || selectedPattern === 'circles') {
+          css += `\n  background-size: ${spacing * 2}px ${spacing * 2}px, 400% 400%;`;
+        } else {
+          css += `\n  background-size: auto, 400% 400%;`;
+        }
       }
     }
 

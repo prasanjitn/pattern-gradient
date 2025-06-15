@@ -86,7 +86,7 @@ export function useGradientGenerator() {
     setAnimationDirection('normal');
   };
 
-  // Generate background style
+  // Generate background style with improved rendering
   const backgroundStyle = useMemo(() => {
     const currentGradient = gradients.find(g => g.id === selectedGradient);
     if (!currentGradient) return { backgroundColor: '#ffffff' };
@@ -103,21 +103,35 @@ export function useGradientGenerator() {
     }
 
     const style: React.CSSProperties = {
-      backgroundColor: '#ffffff', // Always white background
+      backgroundColor: '#ffffff',
       backgroundImage: pattern,
       opacity: opacity / 100,
       transition: 'all 0.3s ease-in-out',
+      // Improved rendering properties
+      backgroundAttachment: 'fixed',
+      backgroundRepeat: 'no-repeat',
+      backgroundPosition: 'center',
+      backgroundSize: '100% 100%',
+      // Prevent rendering artifacts
+      isolation: 'isolate',
+      transform: 'translateZ(0)',
+      willChange: 'background-image, background-position, transform',
+      // Ensure proper color rendering
+      imageRendering: 'crisp-edges',
+      WebkitImageRendering: 'crisp-edges',
     };
 
-    // Add animation if enabled - make it continuous
+    // Add animation if enabled - improved for smoother rendering
     if (isAnimated) {
-      const duration = 21 - animationSpeed; // Convert speed (1-20) to duration (20s-1s)
+      const duration = 21 - animationSpeed;
       if (currentGradient.type === 'conic-gradient') {
         style.animation = `gradientSpin ${duration}s linear infinite ${animationDirection}`;
       } else {
         style.animation = `gradientShift ${duration}s ease-in-out infinite ${animationDirection}`;
-        style.backgroundSize = '400% 400%'; // Larger size for smoother animation
+        style.backgroundSize = '400% 400%';
       }
+      // Optimize for animation
+      style.willChange = 'background-position, transform';
     }
 
     return style;
@@ -145,6 +159,10 @@ export function useGradientGenerator() {
 
     css += `\n  opacity: ${opacity / 100};`;
     css += `\n  transition: all 0.3s ease-in-out;`;
+    css += `\n  background-attachment: fixed;`;
+    css += `\n  background-repeat: no-repeat;`;
+    css += `\n  background-position: center;`;
+    css += `\n  background-size: 100% 100%;`;
 
     if (isAnimated) {
       const duration = 21 - animationSpeed;

@@ -78,5 +78,49 @@
   }
   body {
     @apply bg-background text-foreground;
+    /* Ensure consistent background */
+    background-color: #ffffff !important;
+    background-image: none !important;
+  }
+  
+  /* Fix for background rendering issues */
+  html, body {
+    background-color: #ffffff !important;
+    background-image: none !important;
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+  }
+  
+  /* Prevent background bleeding */
+  main {
+    position: relative;
+    isolation: isolate;
+    background-color: #ffffff;
+  }
+  
+  /* Ensure proper stacking context */
+  .hero-background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1;
+    background-color: #ffffff;
+    /* Prevent background from extending beyond container */
+    overflow: hidden;
+    /* Force hardware acceleration for smoother rendering */
+    transform: translateZ(0);
+    will-change: background-image, background-position;
+  }
+  
+  /* Fix for pattern rendering artifacts */
+  .pattern-container {
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    transform: translate3d(0, 0, 0);
+    -webkit-transform: translate3d(0, 0, 0);
   }
 }
