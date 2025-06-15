@@ -12,13 +12,13 @@ interface Pattern {
 
 export function usePatternGenerator() {
   const [patterns, setPatterns] = useState<Pattern[]>([]);
-  const [selectedPattern, setSelectedPattern] = useState('stripes');
-  const [foregroundColor, setForegroundColor] = useState('#808080'); // Grey
-  const [backgroundColor, setBackgroundColor] = useState('#ffffff'); // White
-  const [opacity, setOpacity] = useState(50); // 50%
-  const [spacing, setSpacing] = useState(20);
+  const [selectedPattern, setSelectedPattern] = useState('dots'); // Changed to dots (polka dots)
+  const [foregroundColor, setForegroundColor] = useState('#254ef4'); // Changed to requested color
+  const [backgroundColor, setBackgroundColor] = useState('#f0fff1'); // Changed to requested color
+  const [opacity, setOpacity] = useState(100); // Changed to 100%
+  const [spacing, setSpacing] = useState(30); // Changed to 30px
   const [isAnimated, setIsAnimated] = useState(false);
-  const [animationSpeed, setAnimationSpeed] = useState(5);
+  const [animationSpeed, setAnimationSpeed] = useState(10); // Changed to 10
   const [animationDirection, setAnimationDirection] = useState('normal');
 
   // Load patterns from JSON
@@ -43,15 +43,35 @@ export function usePatternGenerator() {
       });
   }, []);
 
+  // Generate random pattern
+  const generateRandom = () => {
+    if (patterns.length === 0) return;
+    
+    const randomPattern = patterns[Math.floor(Math.random() * patterns.length)];
+    const randomColors = [
+      '#ff6b6b', '#4ecdc4', '#45b7d1', '#96ceb4', '#feca57', '#ff9ff3', '#54a0ff', '#5f27cd',
+      '#00d2d3', '#ff9f43', '#10ac84', '#ee5a24', '#0abde3', '#3867d6', '#8854d0', '#a55eea'
+    ];
+    
+    setSelectedPattern(randomPattern.id);
+    setForegroundColor(randomColors[Math.floor(Math.random() * randomColors.length)]);
+    setBackgroundColor(randomColors[Math.floor(Math.random() * randomColors.length)]);
+    setOpacity(Math.floor(Math.random() * 50) + 50); // 50-100%
+    setSpacing(Math.floor(Math.random() * 60) + 10); // 10-70px
+    setIsAnimated(Math.random() > 0.5);
+    setAnimationSpeed(Math.floor(Math.random() * 15) + 5); // 5-20
+    setAnimationDirection(['normal', 'reverse', 'alternate', 'alternate-reverse'][Math.floor(Math.random() * 4)]);
+  };
+
   // Reset function
   const reset = () => {
-    setSelectedPattern('stripes');
-    setForegroundColor('#808080'); // Grey
-    setBackgroundColor('#ffffff'); // White
-    setOpacity(50); // 50%
-    setSpacing(20);
+    setSelectedPattern('dots'); // Changed to dots
+    setForegroundColor('#254ef4'); // Changed to requested color
+    setBackgroundColor('#f0fff1'); // Changed to requested color
+    setOpacity(100); // Changed to 100%
+    setSpacing(30); // Changed to 30px
     setIsAnimated(false);
-    setAnimationSpeed(5);
+    setAnimationSpeed(10); // Changed to 10
     setAnimationDirection('normal');
   };
 
@@ -153,6 +173,7 @@ export function usePatternGenerator() {
     setIsAnimated,
     setAnimationSpeed,
     setAnimationDirection,
+    generateRandom,
     reset,
   };
 }

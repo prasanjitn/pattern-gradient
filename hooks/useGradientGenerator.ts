@@ -45,6 +45,28 @@ export function useGradientGenerator() {
       });
   }, []);
 
+  // Generate random gradient
+  const generateRandom = () => {
+    if (gradients.length === 0) return;
+    
+    const randomGradient = gradients[Math.floor(Math.random() * gradients.length)];
+    const randomColors = [
+      '#ff6b6b', '#4ecdc4', '#45b7d1', '#96ceb4', '#feca57', '#ff9ff3', '#54a0ff', '#5f27cd',
+      '#00d2d3', '#ff9f43', '#10ac84', '#ee5a24', '#0abde3', '#3867d6', '#8854d0', '#a55eea'
+    ];
+    
+    setSelectedGradient(randomGradient.id);
+    setColor1(randomColors[Math.floor(Math.random() * randomColors.length)]);
+    setColor2(randomColors[Math.floor(Math.random() * randomColors.length)]);
+    setColor3(randomColors[Math.floor(Math.random() * randomColors.length)]);
+    setColor4(randomColors[Math.floor(Math.random() * randomColors.length)]);
+    setOpacity(Math.floor(Math.random() * 50) + 50); // 50-100%
+    setAngle(Math.floor(Math.random() * 24) * 15); // 0-360 in 15° steps
+    setIsAnimated(Math.random() > 0.5);
+    setAnimationSpeed(Math.floor(Math.random() * 15) + 5); // 5-20
+    setAnimationDirection(['normal', 'reverse', 'alternate', 'alternate-reverse'][Math.floor(Math.random() * 4)]);
+  };
+
   // Reset function
   const reset = () => {
     setSelectedGradient('conic-center');
@@ -173,6 +195,7 @@ export function useGradientGenerator() {
     setIsAnimated,
     setAnimationSpeed,
     setAnimationDirection,
+    generateRandom,
     reset,
   };
 }

@@ -70,6 +70,33 @@ export function useHybridGenerator() {
       });
   }, []);
 
+  // Generate random hybrid
+  const generateRandom = () => {
+    if (patterns.length === 0 || gradients.length === 0) return;
+    
+    const randomPattern = patterns[Math.floor(Math.random() * patterns.length)];
+    const randomGradient = gradients[Math.floor(Math.random() * gradients.length)];
+    const randomColors = [
+      '#ff6b6b', '#4ecdc4', '#45b7d1', '#96ceb4', '#feca57', '#ff9ff3', '#54a0ff', '#5f27cd',
+      '#00d2d3', '#ff9f43', '#10ac84', '#ee5a24', '#0abde3', '#3867d6', '#8854d0', '#a55eea'
+    ];
+    
+    setSelectedPattern(randomPattern.id);
+    setSelectedGradient(randomGradient.id);
+    setPatternColor(randomColors[Math.floor(Math.random() * randomColors.length)]);
+    setGradientColor1(randomColors[Math.floor(Math.random() * randomColors.length)]);
+    setGradientColor2(randomColors[Math.floor(Math.random() * randomColors.length)]);
+    setGradientColor3(randomColors[Math.floor(Math.random() * randomColors.length)]);
+    setGradientColor4(randomColors[Math.floor(Math.random() * randomColors.length)]);
+    setPatternOpacity(Math.floor(Math.random() * 50) + 30); // 30-80%
+    setGradientOpacity(Math.floor(Math.random() * 50) + 50); // 50-100%
+    setSpacing(Math.floor(Math.random() * 60) + 10); // 10-70px
+    setGradientAngle(Math.floor(Math.random() * 24) * 15); // 0-360 in 15° steps
+    setIsAnimated(Math.random() > 0.5);
+    setAnimationSpeed(Math.floor(Math.random() * 15) + 5); // 5-20
+    setAnimationDirection(['normal', 'reverse', 'alternate', 'alternate-reverse'][Math.floor(Math.random() * 4)]);
+  };
+
   // Reset function
   const reset = () => {
     setSelectedPattern('stripes');
@@ -279,6 +306,7 @@ export function useHybridGenerator() {
     setIsAnimated,
     setAnimationSpeed,
     setAnimationDirection,
+    generateRandom,
     reset,
   };
 }

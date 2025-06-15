@@ -7,7 +7,7 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Slider } from '@/components/ui/slider';
 import { Switch } from '@/components/ui/switch';
-import { ChevronDown, ChevronUp, Palette, Sparkles, Zap, Navigation, Layers, RotateCw, RotateCcw } from 'lucide-react';
+import { ChevronDown, ChevronUp, Palette, Sparkles, Zap, Navigation, Layers, RotateCw, RotateCcw, Copy, Check, Shuffle } from 'lucide-react';
 
 interface Pattern {
   id: string;
@@ -42,6 +42,7 @@ interface HybridControlsPanelProps {
   isAnimated: boolean;
   animationSpeed: number;
   animationDirection: string;
+  cssCode: string;
   onPatternChange: (patternId: string) => void;
   onGradientChange: (gradientId: string) => void;
   onPatternColorChange: (color: string) => void;
@@ -57,6 +58,7 @@ interface HybridControlsPanelProps {
   onAnimationSpeedChange: (speed: number) => void;
   onAnimationDirectionChange: (direction: string) => void;
   onReset: () => void;
+  onGenerateRandom: () => void;
 }
 
 export default function HybridControlsPanel({
@@ -76,6 +78,7 @@ export default function HybridControlsPanel({
   isAnimated,
   animationSpeed,
   animationDirection,
+  cssCode,
   onPatternChange,
   onGradientChange,
   onPatternColorChange,
@@ -91,11 +94,23 @@ export default function HybridControlsPanel({
   onAnimationSpeedChange,
   onAnimationDirectionChange,
   onReset,
+  onGenerateRandom,
 }: HybridControlsPanelProps) {
   const [isCollapsed, setIsCollapsed] = useState(false);
+  const [copied, setCopied] = useState(false);
 
   const currentGradient = gradients.find(g => g.id === selectedGradient);
   const showAngleControl = currentGradient?.type === 'linear-gradient';
+
+  const copyToClipboard = async () => {
+    try {
+      await navigator.clipboard.writeText(cssCode);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch (err) {
+      console.error('Failed to copy: ', err);
+    }
+  };
 
   return (
     <Card className="w-full max-w-5xl mx-auto bg-white/10 backdrop-blur-lg border border-white/20 shadow-2xl z-20 rounded-2xl">
@@ -105,6 +120,35 @@ export default function HybridControlsPanel({
             Hybrid Controls
           </CardTitle>
           <div className="flex items-center gap-2">
+            <Button
+              onClick={copyToClipboard}
+              variant="ghost"
+              size="sm"
+              className="h-8 px-3 hover:bg-white/20 text-black"
+              title="Copy CSS"
+            >
+              {copied ? (
+                <>
+                  <Check className="h-4 w-4 mr-1 text-green-600" />
+                  Copied!
+                </>
+              ) : (
+                <>
+                  <Copy className="h-4 w-4 mr-1 text-black" />
+                  Copy CSS
+                </>
+              )}
+            </Button>
+            <Button
+              onClick={onGenerateRandom}
+              variant="ghost"
+              size="sm"
+              className="h-8 px-3 hover:bg-white/20 text-black"
+              title="Generate random hybrid"
+            >
+              <Shuffle className="h-4 w-4 mr-1 text-black" />
+              Random
+            </Button>
             <Button
               onClick={onReset}
               variant="ghost"
