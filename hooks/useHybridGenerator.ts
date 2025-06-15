@@ -39,8 +39,18 @@ export function useHybridGenerator() {
   // Load patterns and gradients from JSON
   useEffect(() => {
     Promise.all([
-      fetch('/data/patterns.json').then(response => response.json()),
-      fetch('/data/gradients.json').then(response => response.json())
+      fetch('/data/patterns.json').then(response => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+      }),
+      fetch('/data/gradients.json').then(response => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+      })
     ])
       .then(([patternsData, gradientsData]) => {
         setPatterns(patternsData.patterns);

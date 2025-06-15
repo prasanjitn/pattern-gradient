@@ -26,7 +26,12 @@ export function useGradientGenerator() {
   // Load gradients from JSON
   useEffect(() => {
     fetch('/data/gradients.json')
-      .then(response => response.json())
+      .then(response => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+      })
       .then(data => {
         setGradients(data.gradients);
       })

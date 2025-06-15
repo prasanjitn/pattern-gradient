@@ -24,7 +24,12 @@ export function usePatternGenerator() {
   // Load patterns from JSON
   useEffect(() => {
     fetch('/data/patterns.json')
-      .then(response => response.json())
+      .then(response => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+      })
       .then(data => {
         setPatterns(data.patterns);
       })
