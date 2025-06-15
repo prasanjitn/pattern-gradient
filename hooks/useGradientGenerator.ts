@@ -169,7 +169,7 @@ export function useGradientGenerator() {
       // Improved rendering properties
       backgroundAttachment: 'fixed',
       backgroundRepeat: 'no-repeat',
-      backgroundPosition: 'center',
+      backgroundPosition: isAnimated && currentGradient.type !== 'conic-gradient' ? '0% 50%' : 'center',
       backgroundSize: '100% 100%',
       // Prevent rendering artifacts
       isolation: 'isolate',
@@ -219,7 +219,7 @@ export function useGradientGenerator() {
     css += `\n  transition: all 0.3s ease-in-out;`;
     css += `\n  background-attachment: fixed;`;
     css += `\n  background-repeat: no-repeat;`;
-    css += `\n  background-position: center;`;
+    css += `\n  background-position: ${isAnimated && currentGradient.type !== 'conic-gradient' ? '0% 50%' : 'center'};`;
     css += `\n  background-size: 100% 100%;`;
 
     if (isAnimated) {

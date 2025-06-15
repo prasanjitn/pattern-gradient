@@ -235,6 +235,10 @@ export function useHybridGenerator() {
       patternColor + Math.round(patternOpacity * 2.55).toString(16).padStart(2, '0')
     );
 
+    // Determine background positions for both layers
+    const patternPosition = isAnimated ? '0 0' : 'center';
+    const gradientPosition = isAnimated && currentGradient.type !== 'conic-gradient' ? '0% 50%' : 'center';
+
     const style: React.CSSProperties = {
       backgroundColor: '#ffffff',
       // Pattern as overlay, gradient as background
@@ -244,14 +248,13 @@ export function useHybridGenerator() {
       // Improved rendering properties
       backgroundAttachment: 'fixed',
       backgroundRepeat: 'repeat, no-repeat',
-      backgroundPosition: 'center, center',
+      backgroundPosition: `${patternPosition}, ${gradientPosition}`,
       // Prevent rendering artifacts
       isolation: 'isolate',
       transform: 'translateZ(0)',
       willChange: 'background-image, background-position, transform',
       // Ensure proper color rendering
       imageRendering: 'crisp-edges',
-      
     };
 
     // Add background size for certain patterns
@@ -319,6 +322,10 @@ export function useHybridGenerator() {
       patternColor + Math.round(patternOpacity * 2.55).toString(16).padStart(2, '0')
     );
 
+    // Determine background positions for both layers
+    const patternPosition = isAnimated ? '0 0' : 'center';
+    const gradientPosition = isAnimated && currentGradient.type !== 'conic-gradient' ? '0% 50%' : 'center';
+
     let css = `.hybrid-background {
   background-color: #ffffff;
   background-image: ${patternWithOpacity}, ${gradient};`;
@@ -336,7 +343,7 @@ export function useHybridGenerator() {
     css += `\n  transition: all 0.3s ease-in-out;`;
     css += `\n  background-attachment: fixed;`;
     css += `\n  background-repeat: repeat, no-repeat;`;
-    css += `\n  background-position: center, center;`;
+    css += `\n  background-position: ${patternPosition}, ${gradientPosition};`;
 
     if (isAnimated) {
       const duration = 21 - animationSpeed;
