@@ -171,7 +171,7 @@ export default function HybridControlsPanel({
       </CardHeader>
       
       {!isCollapsed && (
-        <CardContent className="grid grid-cols-1 md:grid-cols-3 gap-6 p-6 min-h-[320px]">
+        <CardContent className="grid grid-cols-1 md:grid-cols-3 gap-6 p-4 min-h-[320px]">
           {/* Pattern Controls */}
           <div className="space-y-4 flex flex-col">
             <Label className="text-sm font-semibold flex items-center gap-2 text-black">
@@ -229,19 +229,34 @@ export default function HybridControlsPanel({
               />
             </div>
 
-            {/* Pattern Opacity */}
-            <div className="space-y-3">
-              <div className="flex items-center justify-between">
-                <Label className="text-sm font-semibold text-black">Pattern Opacity</Label>
-                <span className="text-sm text-gray-700">{patternOpacity}%</span>
+            {/* Pattern and Gradient Opacity - Side by Side */}
+            <div className="grid grid-cols-2 gap-3">
+              <div className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <Label className="text-xs font-semibold text-black">Pattern</Label>
+                  <span className="text-xs text-gray-700">{patternOpacity}%</span>
+                </div>
+                <Slider
+                  value={[patternOpacity]}
+                  onValueChange={(value) => onPatternOpacityChange(value[0])}
+                  max={100}
+                  step={1}
+                  className="w-full"
+                />
               </div>
-              <Slider
-                value={[patternOpacity]}
-                onValueChange={(value) => onPatternOpacityChange(value[0])}
-                max={100}
-                step={1}
-                className="w-full"
-              />
+              <div className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <Label className="text-xs font-semibold text-black">Gradient</Label>
+                  <span className="text-xs text-gray-700">{gradientOpacity}%</span>
+                </div>
+                <Slider
+                  value={[gradientOpacity]}
+                  onValueChange={(value) => onGradientOpacityChange(value[0])}
+                  max={100}
+                  step={1}
+                  className="w-full"
+                />
+              </div>
             </div>
           </div>
 
@@ -365,21 +380,6 @@ export default function HybridControlsPanel({
                   <p className="text-sm text-gray-600">Angle control available for linear gradients</p>
                 </div>
               )}
-            </div>
-
-            {/* Gradient Opacity */}
-            <div className="space-y-3">
-              <div className="flex items-center justify-between">
-                <Label className="text-sm font-semibold text-black">Gradient Opacity</Label>
-                <span className="text-sm text-gray-700">{gradientOpacity}%</span>
-              </div>
-              <Slider
-                value={[gradientOpacity]}
-                onValueChange={(value) => onGradientOpacityChange(value[0])}
-                max={100}
-                step={1}
-                className="w-full"
-              />
             </div>
           </div>
 

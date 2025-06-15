@@ -145,7 +145,7 @@ export default function GradientControlsPanel({
       </CardHeader>
       
       {!isCollapsed && (
-        <CardContent className="grid grid-cols-1 md:grid-cols-3 gap-6 p-6 min-h-[320px]">
+        <CardContent className="grid grid-cols-1 md:grid-cols-3 gap-6 p-4 min-h-[320px]">
           {/* Gradient Selection */}
           <div className="space-y-4 flex flex-col">
             <Label className="text-sm font-semibold flex items-center gap-2 text-black">

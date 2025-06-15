@@ -14,7 +14,7 @@ export default function Hero({ backgroundStyle, isAnimated, children }: HeroProp
   const getTextColor = () => {
     // For patterns and gradients, we'll use a smart contrast approach
     // Since backgrounds can be complex, we'll use white text with shadow for better readability
-    return 'text-white drop-shadow-lg';
+    return 'text-black drop-shadow-lg';
   };
 
   return (
@@ -30,7 +30,7 @@ export default function Hero({ backgroundStyle, isAnimated, children }: HeroProp
       
       {/* Content - Just the subheader now */}
       <div className="relative z-10 text-center max-w-4xl mx-auto px-6 mb-6">
-        <p className={`text-lg md:text-xl mb-8 leading-relaxed max-w-2xl mx-auto ${getTextColor()}`}>
+        <p className={`text-2xl md:text-3xl mb-8 leading-relaxed max-w-2xl mx-auto ${getTextColor()}`} style={{ fontFamily: 'Plus Jakarta Sans, sans-serif' }}>
           Create, preview, and export customizable CSS backgrounds in seconds.
         </p>
       </div>
