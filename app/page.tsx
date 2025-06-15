@@ -24,7 +24,7 @@ export default function Home() {
     style.textContent = `
       @keyframes patternMove {
         0% { background-position: 0 0; }
-        100% { background-position: 50px 50px; }
+        100% { background-position: var(--pattern-move-x, 50px) var(--pattern-move-y, 50px); }
       }
       @keyframes gradientShift {
         0% { background-position: 0% 50%; }
@@ -124,7 +124,7 @@ export default function Home() {
             spacing={patternHook.spacing}
             isAnimated={patternHook.isAnimated}
             animationSpeed={patternHook.animationSpeed}
-            animationDirection={patternHook.animationDirection}
+            animationAngle={patternHook.animationAngle}
             cssCode={patternHook.cssCode}
             onPatternChange={patternHook.setSelectedPattern}
             onForegroundColorChange={patternHook.setForegroundColor}
@@ -133,7 +133,7 @@ export default function Home() {
             onSpacingChange={patternHook.setSpacing}
             onAnimationToggle={patternHook.setIsAnimated}
             onAnimationSpeedChange={patternHook.setAnimationSpeed}
-            onAnimationDirectionChange={patternHook.setAnimationDirection}
+            onAnimationAngleChange={patternHook.setAnimationAngle}
             onReset={patternHook.reset}
             onGenerateRandom={patternHook.generateRandom}
           />

@@ -7,7 +7,7 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Slider } from '@/components/ui/slider';
 import { Switch } from '@/components/ui/switch';
-import { ChevronDown, ChevronUp, Palette, Sparkles, Zap, Navigation, RotateCcw, Copy, Check, Shuffle } from 'lucide-react';
+import { ChevronDown, ChevronUp, Palette, Sparkles, Zap, RotateCw, RotateCcw, Copy, Check, Shuffle } from 'lucide-react';
 
 interface Pattern {
   id: string;
@@ -26,7 +26,7 @@ interface ControlsPanelProps {
   spacing: number;
   isAnimated: boolean;
   animationSpeed: number;
-  animationDirection: string;
+  animationAngle: number;
   cssCode: string;
   onPatternChange: (patternId: string) => void;
   onForegroundColorChange: (color: string) => void;
@@ -35,7 +35,7 @@ interface ControlsPanelProps {
   onSpacingChange: (spacing: number) => void;
   onAnimationToggle: (isAnimated: boolean) => void;
   onAnimationSpeedChange: (speed: number) => void;
-  onAnimationDirectionChange: (direction: string) => void;
+  onAnimationAngleChange: (angle: number) => void;
   onReset: () => void;
   onGenerateRandom: () => void;
 }
@@ -49,7 +49,7 @@ export default function ControlsPanel({
   spacing,
   isAnimated,
   animationSpeed,
-  animationDirection,
+  animationAngle,
   cssCode,
   onPatternChange,
   onForegroundColorChange,
@@ -58,7 +58,7 @@ export default function ControlsPanel({
   onSpacingChange,
   onAnimationToggle,
   onAnimationSpeedChange,
-  onAnimationDirectionChange,
+  onAnimationAngleChange,
   onReset,
   onGenerateRandom,
 }: ControlsPanelProps) {
@@ -271,28 +271,28 @@ export default function ControlsPanel({
                     />
                   </div>
 
-                  {/* Animation Direction */}
-                  <div className="space-y-2">
-                    <Label className="text-sm font-semibold flex items-center gap-2 text-black">
-                      <Navigation className="h-4 w-4 text-black" />
-                      Direction
-                    </Label>
-                    <Select value={animationDirection} onValueChange={onAnimationDirectionChange}>
-                      <SelectTrigger className="bg-white/10 backdrop-blur-sm border-white/20 text-black">
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="normal">Normal</SelectItem>
-                        <SelectItem value="reverse">Reverse</SelectItem>
-                        <SelectItem value="alternate">Alternate</SelectItem>
-                        <SelectItem value="alternate-reverse">Alternate Reverse</SelectItem>
-                      </SelectContent>
-                    </Select>
+                  {/* Animation Angle */}
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between">
+                      <Label className="text-sm font-semibold flex items-center gap-2 text-black">
+                        <RotateCw className="h-4 w-4 text-black" />
+                        Angle
+                      </Label>
+                      <span className="text-sm text-gray-700">{animationAngle}°</span>
+                    </div>
+                    <Slider
+                      value={[animationAngle]}
+                      onValueChange={(value) => onAnimationAngleChange(value[0])}
+                      min={0}
+                      max={360}
+                      step={1}
+                      className="w-full"
+                    />
                   </div>
                 </div>
               ) : (
                 <div className="pt-2 border-t border-white/10 opacity-50">
-                  <p className="text-sm text-gray-600">Enable animation to access speed and direction controls</p>
+                  <p className="text-sm text-gray-600">Enable animation to access speed and angle controls</p>
                 </div>
               )}
             </div>

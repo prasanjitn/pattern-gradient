@@ -79,7 +79,7 @@ export function usePatternGenerator() {
   const [spacing, setSpacing] = useState(30);
   const [isAnimated, setIsAnimated] = useState(false);
   const [animationSpeed, setAnimationSpeed] = useState(10);
-  const [animationDirection, setAnimationDirection] = useState('normal');
+  const [animationAngle, setAnimationAngle] = useState(0);
 
   // Load patterns from JSON with better error handling
   useEffect(() => {
@@ -146,7 +146,8 @@ export function usePatternGenerator() {
     // More reasonable animation speed range
     setAnimationSpeed(Math.floor(Math.random() * 10) + 8); // 8-18
     
-    setAnimationDirection(['normal', 'reverse', 'alternate', 'alternate-reverse'][Math.floor(Math.random() * 4)]);
+    // Random angle from 0-360
+    setAnimationAngle(Math.floor(Math.random() * 361));
   };
 
   // Reset function
@@ -158,7 +159,7 @@ export function usePatternGenerator() {
     setSpacing(30);
     setIsAnimated(false);
     setAnimationSpeed(10);
-    setAnimationDirection('normal');
+    setAnimationAngle(0);
   };
 
   // Generate background style with improved rendering
@@ -181,14 +182,13 @@ export function usePatternGenerator() {
       // Improved rendering properties
       backgroundAttachment: 'fixed',
       backgroundRepeat: 'repeat',
-      backgroundPosition: 'center',
+      backgroundPosition: isAnimated ? '0 0' : 'center',
       // Prevent rendering artifacts
       isolation: 'isolate',
       transform: 'translateZ(0)',
       willChange: 'background-image, background-position',
       // Ensure proper color rendering
       imageRendering: 'crisp-edges',
-      
     };
 
     // Add background size for certain patterns
@@ -201,13 +201,23 @@ export function usePatternGenerator() {
     // Add animation if enabled - improved for smoother rendering
     if (isAnimated) {
       const duration = 21 - animationSpeed;
-      style.animation = `patternMove ${duration}s linear infinite ${animationDirection}`;
+      
+      // Calculate movement based on angle
+      const angleRad = (animationAngle * Math.PI) / 180;
+      const moveX = Math.cos(angleRad) * spacing;
+      const moveY = Math.sin(angleRad) * spacing;
+      
+      // Set CSS custom properties for the animation
+      style['--pattern-move-x' as any] = `${moveX}px`;
+      style['--pattern-move-y' as any] = `${moveY}px`;
+      
+      style.animation = `patternMove ${duration}s linear infinite`;
       // Optimize for animation
       style.willChange = 'background-position, transform';
     }
 
     return style;
-  }, [patterns, selectedPattern, foregroundColor, backgroundColor, opacity, spacing, isAnimated, animationSpeed, animationDirection]);
+  }, [patterns, selectedPattern, foregroundColor, backgroundColor, opacity, spacing, isAnimated, animationSpeed, animationAngle]);
 
   // Generate CSS code
   const cssCode = useMemo(() => {
@@ -236,24 +246,29 @@ export function usePatternGenerator() {
     css += `\n  transition: all 0.3s ease-in-out;`;
     css += `\n  background-attachment: fixed;`;
     css += `\n  background-repeat: repeat;`;
-    css += `\n  background-position: center;`;
+    css += `\n  background-position: ${isAnimated ? '0 0' : 'center'};`;
 
     if (isAnimated) {
       const duration = 21 - animationSpeed;
-      css += `\n  animation: patternMove ${duration}s linear infinite ${animationDirection};`;
+      css += `\n  animation: patternMove ${duration}s linear infinite;`;
     }
 
     css += `\n}`;
 
     if (isAnimated) {
+      // Calculate movement based on angle
+      const angleRad = (animationAngle * Math.PI) / 180;
+      const moveX = Math.cos(angleRad) * spacing;
+      const moveY = Math.sin(angleRad) * spacing;
+      
       css += `\n\n@keyframes patternMove {
   0% { background-position: 0 0; }
-  100% { background-position: ${spacing}px ${spacing}px; }
+  100% { background-position: ${moveX}px ${moveY}px; }
 }`;
     }
 
     return css;
-  }, [patterns, selectedPattern, foregroundColor, backgroundColor, opacity, spacing, isAnimated, animationSpeed, animationDirection]);
+  }, [patterns, selectedPattern, foregroundColor, backgroundColor, opacity, spacing, isAnimated, animationSpeed, animationAngle]);
 
   return {
     patterns,
@@ -264,7 +279,7 @@ export function usePatternGenerator() {
     spacing,
     isAnimated,
     animationSpeed,
-    animationDirection,
+    animationAngle,
     backgroundStyle,
     cssCode,
     setSelectedPattern,
@@ -274,7 +289,7 @@ export function usePatternGenerator() {
     setSpacing,
     setIsAnimated,
     setAnimationSpeed,
-    setAnimationDirection,
+    setAnimationAngle,
     generateRandom,
     reset,
   };
