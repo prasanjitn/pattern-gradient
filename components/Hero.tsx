@@ -10,6 +10,13 @@ interface HeroProps {
 }
 
 export default function Hero({ backgroundStyle, isAnimated, children }: HeroProps) {
+  // Calculate text color based on background for high contrast
+  const getTextColor = () => {
+    // For patterns and gradients, we'll use a smart contrast approach
+    // Since backgrounds can be complex, we'll use white text with shadow for better readability
+    return 'text-white drop-shadow-lg';
+  };
+
   return (
     <div className="relative min-h-screen flex flex-col items-center justify-center overflow-hidden">
       {/* Animated Background */}
@@ -19,25 +26,23 @@ export default function Hero({ backgroundStyle, isAnimated, children }: HeroProp
       />
       
       {/* Gradient Overlay for better text readability */}
-      <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-black/20" />
+      <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-transparent to-black/30" />
       
       {/* Content */}
-      <div className="relative z-10 text-center max-w-4xl mx-auto px-6 mb-8">
-        <h1 className="text-5xl md:text-7xl font-bold text-white mb-6 leading-tight">
-          CSS Pattern
-          <span className="block bg-gradient-to-r from-blue-400 via-purple-500 to-pink-500 bg-clip-text text-transparent">
-            Designer
+      <div className="relative z-10 text-center max-w-4xl mx-auto px-6 mb-6">
+        <h1 className="text-4xl md:text-6xl font-bold mb-4 leading-tight">
+          <span className={`block ${getTextColor()}`}>
+            CSS Pattern Designer
           </span>
         </h1>
         
-        <p className="text-xl md:text-2xl text-white/90 mb-12 leading-relaxed max-w-2xl mx-auto">
-          Create beautiful, customizable CSS background patterns with live preview. 
-          Design, customize, and export professional patterns in seconds.
+        <p className={`text-lg md:text-xl mb-8 leading-relaxed max-w-2xl mx-auto ${getTextColor()}`}>
+          Create, preview, and export customizable CSS backgrounds in seconds.
         </p>
       </div>
 
       {/* Controls Panel */}
-      <div className="relative z-10 w-full max-w-6xl mx-auto px-6 mb-8">
+      <div className="relative z-10 w-full max-w-5xl mx-auto px-6 mb-6">
         {children}
       </div>
       

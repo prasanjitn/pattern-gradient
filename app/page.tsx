@@ -6,7 +6,6 @@ import ControlsPanel from '@/components/ControlsPanel';
 import GradientControlsPanel from '@/components/GradientControlsPanel';
 import HybridControlsPanel from '@/components/HybridControlsPanel';
 import CssOutput from '@/components/CssOutput';
-import ThemeToggle from '@/components/ThemeToggle';
 import ModeToggle from '@/components/ModeToggle';
 import { usePatternGenerator } from '@/hooks/usePatternGenerator';
 import { useGradientGenerator } from '@/hooks/useGradientGenerator';
@@ -21,13 +20,6 @@ export default function Home() {
 
   // Initialize theme on mount
   useEffect(() => {
-    const savedTheme = localStorage.getItem('theme');
-    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    
-    if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
-      document.documentElement.classList.add('dark');
-    }
-
     // Add animation keyframes to document
     const style = document.createElement('style');
     style.textContent = `
@@ -115,7 +107,6 @@ export default function Home() {
 
   return (
     <main className="min-h-screen bg-white">
-      <ThemeToggle />
       <ModeToggle mode={mode} onModeChange={setMode} />
       
       <Hero 

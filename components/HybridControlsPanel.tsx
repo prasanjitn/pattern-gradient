@@ -7,7 +7,7 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Slider } from '@/components/ui/slider';
 import { Switch } from '@/components/ui/switch';
-import { ChevronDown, ChevronUp, Palette, Settings, Sparkles, Zap, Navigation, Layers, RotateCw, RotateCcw } from 'lucide-react';
+import { ChevronDown, ChevronUp, Palette, Sparkles, Zap, Navigation, Layers, RotateCw, RotateCcw } from 'lucide-react';
 
 interface Pattern {
   id: string;
@@ -98,50 +98,49 @@ export default function HybridControlsPanel({
   const showAngleControl = currentGradient?.type === 'linear-gradient';
 
   return (
-    <Card className="w-full max-w-6xl mx-auto bg-white/10 backdrop-blur-lg border border-white/20 shadow-2xl z-20">
-      <CardHeader className="pb-3 bg-white/10 backdrop-blur-lg z-10 border-b border-white/10">
+    <Card className="w-full max-w-5xl mx-auto bg-white/95 backdrop-blur-lg border border-gray-200 shadow-2xl z-20 rounded-2xl">
+      <CardHeader className="pb-3 bg-white/95 backdrop-blur-lg z-10 border-b border-gray-200 rounded-t-2xl">
         <div className="flex items-center justify-between">
-          <CardTitle className="flex items-center gap-2 text-2xl text-white">
-            <Layers className="h-6 w-6 text-cyan-400" />
-            CSS Pattern Designer
+          <CardTitle className="text-xl text-black font-semibold">
+            Hybrid Controls
           </CardTitle>
           <div className="flex items-center gap-2">
             <Button
               onClick={onReset}
               variant="ghost"
               size="sm"
-              className="h-8 px-2 hover:bg-white/20 text-white"
+              className="h-8 px-2 hover:bg-gray-100 text-black"
               title="Reset to defaults"
             >
-              <RotateCcw className="h-4 w-4" />
+              <RotateCcw className="h-4 w-4 text-black" />
             </Button>
             <Button
               variant="ghost"
               size="sm"
               onClick={() => setIsCollapsed(!isCollapsed)}
-              className="h-8 w-8 p-0 hover:bg-white/20 text-white"
+              className="h-8 w-8 p-0 hover:bg-gray-100 text-black"
             >
-              {isCollapsed ? <ChevronDown className="h-4 w-4" /> : <ChevronUp className="h-4 w-4" />}
+              {isCollapsed ? <ChevronDown className="h-4 w-4 text-black" /> : <ChevronUp className="h-4 w-4 text-black" />}
             </Button>
           </div>
         </div>
       </CardHeader>
       
       {!isCollapsed && (
-        <CardContent className="space-y-6 p-6">
+        <CardContent className="space-y-6 p-6 bg-white/95">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* Gradient Selection - Background Layer */}
-            <div className="space-y-4 p-4 bg-white/5 backdrop-blur-sm rounded-lg border border-white/10">
-              <Label className="text-sm font-semibold flex items-center gap-2 text-white">
-                <Palette className="h-4 w-4 text-pink-400" />
+            <div className="space-y-4 p-4 bg-gray-50 rounded-lg border border-gray-200">
+              <Label className="text-sm font-semibold flex items-center gap-2 text-black">
+                <Palette className="h-4 w-4 text-black" />
                 Background Gradient
               </Label>
               
               <div className="space-y-3">
                 <div className="space-y-2">
-                  <Label className="text-xs text-gray-300">Gradient Type</Label>
+                  <Label className="text-xs text-gray-600">Gradient Type</Label>
                   <Select value={selectedGradient} onValueChange={onGradientChange}>
-                    <SelectTrigger className="bg-white/10 backdrop-blur-sm border-white/20 text-white">
+                    <SelectTrigger className="bg-white border-gray-300 text-black">
                       <SelectValue placeholder="Select a gradient" />
                     </SelectTrigger>
                     <SelectContent>
@@ -159,77 +158,77 @@ export default function HybridControlsPanel({
 
                 {/* Gradient Colors */}
                 <div className="space-y-3">
-                  <Label className="text-xs text-gray-300">Gradient Colors</Label>
+                  <Label className="text-xs text-gray-600">Gradient Colors</Label>
                   
                   <div className="grid grid-cols-2 gap-2">
                     <div className="space-y-1">
-                      <Label className="text-xs text-gray-400">Color 1</Label>
+                      <Label className="text-xs text-gray-500">Color 1</Label>
                       <div className="flex items-center gap-1">
                         <input
                           type="color"
                           value={gradientColor1}
                           onChange={(e) => onGradientColor1Change(e.target.value)}
-                          className="w-8 h-6 rounded border border-white/20 cursor-pointer flex-shrink-0"
+                          className="w-8 h-6 rounded border border-gray-300 cursor-pointer flex-shrink-0"
                         />
                         <input
                           type="text"
                           value={gradientColor1}
                           onChange={(e) => onGradientColor1Change(e.target.value)}
-                          className="flex-1 px-1 py-1 text-xs border border-white/20 rounded bg-white/10 backdrop-blur-sm text-white min-w-0"
+                          className="flex-1 px-1 py-1 text-xs border border-gray-300 rounded bg-white text-black min-w-0"
                         />
                       </div>
                     </div>
                     
                     <div className="space-y-1">
-                      <Label className="text-xs text-gray-400">Color 2</Label>
+                      <Label className="text-xs text-gray-500">Color 2</Label>
                       <div className="flex items-center gap-1">
                         <input
                           type="color"
                           value={gradientColor2}
                           onChange={(e) => onGradientColor2Change(e.target.value)}
-                          className="w-8 h-6 rounded border border-white/20 cursor-pointer flex-shrink-0"
+                          className="w-8 h-6 rounded border border-gray-300 cursor-pointer flex-shrink-0"
                         />
                         <input
                           type="text"
                           value={gradientColor2}
                           onChange={(e) => onGradientColor2Change(e.target.value)}
-                          className="flex-1 px-1 py-1 text-xs border border-white/20 rounded bg-white/10 backdrop-blur-sm text-white min-w-0"
+                          className="flex-1 px-1 py-1 text-xs border border-gray-300 rounded bg-white text-black min-w-0"
                         />
                       </div>
                     </div>
 
                     <div className="space-y-1">
-                      <Label className="text-xs text-gray-400">Color 3</Label>
+                      <Label className="text-xs text-gray-500">Color 3</Label>
                       <div className="flex items-center gap-1">
                         <input
                           type="color"
                           value={gradientColor3}
                           onChange={(e) => onGradientColor3Change(e.target.value)}
-                          className="w-8 h-6 rounded border border-white/20 cursor-pointer flex-shrink-0"
+                          className="w-8 h-6 rounded border border-gray-300 cursor-pointer flex-shrink-0"
                         />
                         <input
                           type="text"
                           value={gradientColor3}
                           onChange={(e) => onGradientColor3Change(e.target.value)}
-                          className="flex-1 px-1 py-1 text-xs border border-white/20 rounded bg-white/10 backdrop-blur-sm text-white min-w-0"
+                          className="flex-1 px-1 py-1 text-xs border border-gray-300 rounded bg-white text-black min-w-0"
                         />
                       </div>
                     </div>
 
                     <div className="space-y-1">
-                      <Label className="text-xs text-gray-400">Color 4</Label>
+                      <Label className="text-xs text-gray-500">Color 4</Label>
                       <div className="flex items-center gap-1">
                         <input
                           type="color"
                           value={gradientColor4}
                           onChange={(e) => onGradientColor4Change(e.target.value)}
-                          className="w-8 h-6 rounded border border-white/20 cursor-pointer flex-shrink-0"
+                          className="w-8 h-6 rounded border border-gray-300 cursor-pointer flex-shrink-0"
                         />
                         <input
                           type="text"
                           value={gradientColor4}
                           onChange={(e) => onGradientColor4Change(e.target.value)}
-                          className="flex-1 px-1 py-1 text-xs border border-white/20 rounded bg-white/10 backdrop-blur-sm text-white min-w-0"
+                          className="flex-1 px-1 py-1 text-xs border border-gray-300 rounded bg-white text-black min-w-0"
                         />
                       </div>
                     </div>
@@ -240,11 +239,11 @@ export default function HybridControlsPanel({
                 {showAngleControl && (
                   <div className="space-y-2">
                     <div className="flex items-center justify-between">
-                      <Label className="text-xs text-gray-300 flex items-center gap-1">
-                        <RotateCw className="h-3 w-3" />
+                      <Label className="text-xs text-gray-600 flex items-center gap-1">
+                        <RotateCw className="h-3 w-3 text-black" />
                         Angle
                       </Label>
-                      <span className="text-xs text-gray-300">{gradientAngle}°</span>
+                      <span className="text-xs text-gray-600">{gradientAngle}°</span>
                     </div>
                     <Slider
                       value={[gradientAngle]}
@@ -260,8 +259,8 @@ export default function HybridControlsPanel({
                 {/* Gradient Opacity */}
                 <div className="space-y-2">
                   <div className="flex items-center justify-between">
-                    <Label className="text-xs text-gray-300">Gradient Opacity</Label>
-                    <span className="text-xs text-gray-300">{gradientOpacity}%</span>
+                    <Label className="text-xs text-gray-600">Gradient Opacity</Label>
+                    <span className="text-xs text-gray-600">{gradientOpacity}%</span>
                   </div>
                   <Slider
                     value={[gradientOpacity]}
@@ -275,17 +274,17 @@ export default function HybridControlsPanel({
             </div>
 
             {/* Pattern Selection - Foreground Layer */}
-            <div className="space-y-4 p-4 bg-white/5 backdrop-blur-sm rounded-lg border border-white/10">
-              <Label className="text-sm font-semibold flex items-center gap-2 text-white">
-                <Sparkles className="h-4 w-4 text-purple-400" />
+            <div className="space-y-4 p-4 bg-gray-50 rounded-lg border border-gray-200">
+              <Label className="text-sm font-semibold flex items-center gap-2 text-black">
+                <Sparkles className="h-4 w-4 text-black" />
                 Foreground Pattern
               </Label>
               
               <div className="space-y-3">
                 <div className="space-y-2">
-                  <Label className="text-xs text-gray-300">Pattern Type</Label>
+                  <Label className="text-xs text-gray-600">Pattern Type</Label>
                   <Select value={selectedPattern} onValueChange={onPatternChange}>
-                    <SelectTrigger className="bg-white/10 backdrop-blur-sm border-white/20 text-white">
+                    <SelectTrigger className="bg-white border-gray-300 text-black">
                       <SelectValue placeholder="Select a pattern" />
                     </SelectTrigger>
                     <SelectContent>
@@ -303,19 +302,19 @@ export default function HybridControlsPanel({
 
                 {/* Pattern Color */}
                 <div className="space-y-2">
-                  <Label className="text-xs text-gray-300">Pattern Color</Label>
+                  <Label className="text-xs text-gray-600">Pattern Color</Label>
                   <div className="flex items-center gap-2">
                     <input
                       type="color"
                       value={patternColor}
                       onChange={(e) => onPatternColorChange(e.target.value)}
-                      className="w-10 h-8 rounded-md border-2 border-white/20 cursor-pointer flex-shrink-0"
+                      className="w-10 h-8 rounded-md border-2 border-gray-300 cursor-pointer flex-shrink-0"
                     />
                     <input
                       type="text"
                       value={patternColor}
                       onChange={(e) => onPatternColorChange(e.target.value)}
-                      className="flex-1 px-2 py-1 text-xs border border-white/20 rounded-md bg-white/10 backdrop-blur-sm text-white min-w-0"
+                      className="flex-1 px-2 py-1 text-xs border border-gray-300 rounded-md bg-white text-black min-w-0"
                     />
                   </div>
                 </div>
@@ -323,8 +322,8 @@ export default function HybridControlsPanel({
                 {/* Pattern Opacity */}
                 <div className="space-y-2">
                   <div className="flex items-center justify-between">
-                    <Label className="text-xs text-gray-300">Pattern Opacity</Label>
-                    <span className="text-xs text-gray-300">{patternOpacity}%</span>
+                    <Label className="text-xs text-gray-600">Pattern Opacity</Label>
+                    <span className="text-xs text-gray-600">{patternOpacity}%</span>
                   </div>
                   <Slider
                     value={[patternOpacity]}
@@ -338,8 +337,8 @@ export default function HybridControlsPanel({
                 {/* Pattern Spacing */}
                 <div className="space-y-2">
                   <div className="flex items-center justify-between">
-                    <Label className="text-xs text-gray-300">Pattern Spacing</Label>
-                    <span className="text-xs text-gray-300">{spacing}px</span>
+                    <Label className="text-xs text-gray-600">Pattern Spacing</Label>
+                    <span className="text-xs text-gray-600">{spacing}px</span>
                   </div>
                   <Slider
                     value={[spacing]}
@@ -355,11 +354,11 @@ export default function HybridControlsPanel({
           </div>
 
           {/* Animation Controls */}
-          <div className="space-y-4 p-4 bg-white/5 backdrop-blur-sm rounded-lg border border-white/10">
+          <div className="space-y-4 p-4 bg-gray-50 rounded-lg border border-gray-200">
             <div className="flex items-center justify-between">
               <div>
-                <Label className="text-sm font-semibold text-white">Animated Hybrid</Label>
-                <p className="text-xs text-gray-300">Add flowing animation</p>
+                <Label className="text-sm font-semibold text-black">Animated Hybrid</Label>
+                <p className="text-xs text-gray-600">Add flowing animation</p>
               </div>
               <Switch
                 checked={isAnimated}
@@ -368,15 +367,15 @@ export default function HybridControlsPanel({
             </div>
 
             {isAnimated && (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2 border-t border-white/10">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2 border-t border-gray-200">
                 {/* Animation Speed */}
                 <div className="space-y-3">
                   <div className="flex items-center justify-between">
-                    <Label className="text-sm font-semibold flex items-center gap-2 text-white">
-                      <Zap className="h-4 w-4 text-yellow-400" />
+                    <Label className="text-sm font-semibold flex items-center gap-2 text-black">
+                      <Zap className="h-4 w-4 text-black" />
                       Speed
                     </Label>
-                    <span className="text-sm text-gray-300">{animationSpeed}/20</span>
+                    <span className="text-sm text-gray-600">{animationSpeed}/20</span>
                   </div>
                   <Slider
                     value={[animationSpeed]}
@@ -390,12 +389,12 @@ export default function HybridControlsPanel({
 
                 {/* Animation Direction */}
                 <div className="space-y-2">
-                  <Label className="text-sm font-semibold flex items-center gap-2 text-white">
-                    <Navigation className="h-4 w-4 text-orange-400" />
+                  <Label className="text-sm font-semibold flex items-center gap-2 text-black">
+                    <Navigation className="h-4 w-4 text-black" />
                     Direction
                   </Label>
                   <Select value={animationDirection} onValueChange={onAnimationDirectionChange}>
-                    <SelectTrigger className="bg-white/10 backdrop-blur-sm border-white/20 text-white">
+                    <SelectTrigger className="bg-white border-gray-300 text-black">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
