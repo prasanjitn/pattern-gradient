@@ -22,16 +22,16 @@ export function useHybridGenerator() {
   const [patterns, setPatterns] = useState<Pattern[]>([]);
   const [gradients, setGradients] = useState<Gradient[]>([]);
   const [selectedPattern, setSelectedPattern] = useState('stripes');
-  const [selectedGradient, setSelectedGradient] = useState('linear-diagonal');
-  const [patternColor, setPatternColor] = useState('#3b82f6');
-  const [gradientColor1, setGradientColor1] = useState('#ff6b6b');
-  const [gradientColor2, setGradientColor2] = useState('#4ecdc4');
-  const [gradientColor3, setGradientColor3] = useState('#45b7d1');
-  const [gradientColor4, setGradientColor4] = useState('#96ceb4');
-  const [patternOpacity, setPatternOpacity] = useState(60);
-  const [gradientOpacity, setGradientOpacity] = useState(100);
-  const [spacing, setSpacing] = useState(20);
-  const [gradientAngle, setGradientAngle] = useState(45);
+  const [selectedGradient, setSelectedGradient] = useState('linear-vertical');
+  const [patternColor, setPatternColor] = useState('#feca57');
+  const [gradientColor1, setGradientColor1] = useState('#a55eea');
+  const [gradientColor2, setGradientColor2] = useState('#0abde3');
+  const [gradientColor3, setGradientColor3] = useState('#54a0ff');
+  const [gradientColor4, setGradientColor4] = useState('#feca57');
+  const [patternOpacity, setPatternOpacity] = useState(63); // ~a1 in hex
+  const [gradientOpacity, setGradientOpacity] = useState(54);
+  const [spacing, setSpacing] = useState(5);
+  const [gradientAngle, setGradientAngle] = useState(0);
   const [isAnimated, setIsAnimated] = useState(false);
   const [animationSpeed, setAnimationSpeed] = useState(5);
   const [animationDirection, setAnimationDirection] = useState('normal');
@@ -70,11 +70,11 @@ export function useHybridGenerator() {
         ]);
         setGradients([
           {
-            id: 'linear-diagonal',
-            name: 'Linear Diagonal',
+            id: 'linear-vertical',
+            name: 'Linear Vertical',
             type: 'linear-gradient',
-            description: 'Diagonal gradient',
-            basePattern: 'linear-gradient(45deg, {color1}, {color2})'
+            description: 'Vertical gradient',
+            basePattern: 'linear-gradient(0deg, {color1}, {color2}, {color3}, {color4})'
           }
         ]);
       });
@@ -110,16 +110,16 @@ export function useHybridGenerator() {
   // Reset function
   const reset = () => {
     setSelectedPattern('stripes');
-    setSelectedGradient('linear-diagonal');
-    setPatternColor('#3b82f6');
-    setGradientColor1('#ff6b6b');
-    setGradientColor2('#4ecdc4');
-    setGradientColor3('#45b7d1');
-    setGradientColor4('#96ceb4');
-    setPatternOpacity(60);
-    setGradientOpacity(100);
-    setSpacing(20);
-    setGradientAngle(45);
+    setSelectedGradient('linear-vertical');
+    setPatternColor('#feca57');
+    setGradientColor1('#a55eea');
+    setGradientColor2('#0abde3');
+    setGradientColor3('#54a0ff');
+    setGradientColor4('#feca57');
+    setPatternOpacity(63);
+    setGradientOpacity(54);
+    setSpacing(5);
+    setGradientAngle(0);
     setIsAnimated(false);
     setAnimationSpeed(5);
     setAnimationDirection('normal');

@@ -213,75 +213,73 @@ export default function GradientControlsPanel({
             </Label>
             
             <div className="space-y-3">
-              <div className="space-y-2">
-                <Label className="text-xs text-gray-700">Color 1</Label>
-                <div className="flex items-center gap-2">
-                  <input
-                    type="color"
-                    value={color1}
-                    onChange={(e) => onColor1Change(e.target.value)}
-                    className="w-10 h-8 rounded-md border-2 border-white/20 cursor-pointer flex-shrink-0"
-                  />
-                  <input
-                    type="text"
-                    value={color1}
-                    onChange={(e) => onColor1Change(e.target.value)}
-                    className="flex-1 px-2 py-1 text-xs border border-white/20 rounded-md bg-white/10 backdrop-blur-sm text-black min-w-0"
-                  />
+              <div className="grid grid-cols-2 gap-2">
+                <div className="space-y-1">
+                  <div className="flex items-center gap-1">
+                    <input
+                      type="color"
+                      value={color1}
+                      onChange={(e) => onColor1Change(e.target.value)}
+                      className="w-8 h-6 rounded border border-white/20 cursor-pointer flex-shrink-0"
+                    />
+                    <input
+                      type="text"
+                      value={color1}
+                      onChange={(e) => onColor1Change(e.target.value)}
+                      className="flex-1 px-1 py-1 text-xs border border-white/20 rounded bg-white/10 backdrop-blur-sm text-black min-w-0"
+                    />
+                  </div>
                 </div>
-              </div>
-              
-              <div className="space-y-2">
-                <Label className="text-xs text-gray-700">Color 2</Label>
-                <div className="flex items-center gap-2">
-                  <input
-                    type="color"
-                    value={color2}
-                    onChange={(e) => onColor2Change(e.target.value)}
-                    className="w-10 h-8 rounded-md border-2 border-white/20 cursor-pointer flex-shrink-0"
-                  />
-                  <input
-                    type="text"
-                    value={color2}
-                    onChange={(e) => onColor2Change(e.target.value)}
-                    className="flex-1 px-2 py-1 text-xs border border-white/20 rounded-md bg-white/10 backdrop-blur-sm text-black min-w-0"
-                  />
+                
+                <div className="space-y-1">
+                  <div className="flex items-center gap-1">
+                    <input
+                      type="color"
+                      value={color2}
+                      onChange={(e) => onColor2Change(e.target.value)}
+                      className="w-8 h-6 rounded border border-white/20 cursor-pointer flex-shrink-0"
+                    />
+                    <input
+                      type="text"
+                      value={color2}
+                      onChange={(e) => onColor2Change(e.target.value)}
+                      className="flex-1 px-1 py-1 text-xs border border-white/20 rounded bg-white/10 backdrop-blur-sm text-black min-w-0"
+                    />
+                  </div>
                 </div>
-              </div>
 
-              <div className="space-y-2">
-                <Label className="text-xs text-gray-700">Color 3</Label>
-                <div className="flex items-center gap-2">
-                  <input
-                    type="color"
-                    value={color3}
-                    onChange={(e) => onColor3Change(e.target.value)}
-                    className="w-10 h-8 rounded-md border-2 border-white/20 cursor-pointer flex-shrink-0"
-                  />
-                  <input
-                    type="text"
-                    value={color3}
-                    onChange={(e) => onColor3Change(e.target.value)}
-                    className="flex-1 px-2 py-1 text-xs border border-white/20 rounded-md bg-white/10 backdrop-blur-sm text-black min-w-0"
-                  />
+                <div className="space-y-1">
+                  <div className="flex items-center gap-1">
+                    <input
+                      type="color"
+                      value={color3}
+                      onChange={(e) => onColor3Change(e.target.value)}
+                      className="w-8 h-6 rounded border border-white/20 cursor-pointer flex-shrink-0"
+                    />
+                    <input
+                      type="text"
+                      value={color3}
+                      onChange={(e) => onColor3Change(e.target.value)}
+                      className="flex-1 px-1 py-1 text-xs border border-white/20 rounded bg-white/10 backdrop-blur-sm text-black min-w-0"
+                    />
+                  </div>
                 </div>
-              </div>
 
-              <div className="space-y-2">
-                <Label className="text-xs text-gray-700">Color 4</Label>
-                <div className="flex items-center gap-2">
-                  <input
-                    type="color"
-                    value={color4}
-                    onChange={(e) => onColor4Change(e.target.value)}
-                    className="w-10 h-8 rounded-md border-2 border-white/20 cursor-pointer flex-shrink-0"
-                  />
-                  <input
-                    type="text"
-                    value={color4}
-                    onChange={(e) => onColor4Change(e.target.value)}
-                    className="flex-1 px-2 py-1 text-xs border border-white/20 rounded-md bg-white/10 backdrop-blur-sm text-black min-w-0"
-                  />
+                <div className="space-y-1">
+                  <div className="flex items-center gap-1">
+                    <input
+                      type="color"
+                      value={color4}
+                      onChange={(e) => onColor4Change(e.target.value)}
+                      className="w-8 h-6 rounded border border-white/20 cursor-pointer flex-shrink-0"
+                    />
+                    <input
+                      type="text"
+                      value={color4}
+                      onChange={(e) => onColor4Change(e.target.value)}
+                      className="flex-1 px-1 py-1 text-xs border border-white/20 rounded bg-white/10 backdrop-blur-sm text-black min-w-0"
+                    />
+                  </div>
                 </div>
               </div>
             </div>
