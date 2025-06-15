@@ -10,13 +10,6 @@ interface HeroProps {
 }
 
 export default function Hero({ backgroundStyle, isAnimated, children }: HeroProps) {
-  // Calculate text color based on background for high contrast
-  const getTextColor = () => {
-    // For patterns and gradients, we'll use a smart contrast approach
-    // Since backgrounds can be complex, we'll use white text with shadow for better readability
-    return 'text-black drop-shadow-lg';
-  };
-
   return (
     <div className="relative min-h-screen flex flex-col items-center justify-center overflow-hidden">
       {/* Animated Background */}
@@ -30,7 +23,7 @@ export default function Hero({ backgroundStyle, isAnimated, children }: HeroProp
       
       {/* Content - Just the subheader now, positioned closer to controls */}
       <div className="relative z-10 text-center max-w-4xl mx-auto px-6 mb-3">
-        <p className={`text-lg md:text-xl mb-4 leading-relaxed max-w-2xl mx-auto ${getTextColor()}`} style={{ fontFamily: 'var(--font-josefin-sans), sans-serif' }}>
+        <p className="text-lg md:text-xl mb-4 leading-relaxed max-w-2xl mx-auto text-white font-bold drop-shadow-lg" style={{ fontFamily: 'var(--font-josefin-sans), sans-serif' }}>
           Create, preview, and export customizable CSS backgrounds in seconds.
         </p>
       </div>
