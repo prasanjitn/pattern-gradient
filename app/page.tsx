@@ -105,13 +105,15 @@ export default function Home() {
     }
   };
 
+  const currentBackgroundStyle = getCurrentBackgroundStyle();
+
   return (
     <main className="min-h-screen bg-white">
-      <ModeToggle mode={mode} onModeChange={setMode} />
-      <SocialIcons />
+      <ModeToggle mode={mode} onModeChange={setMode} backgroundStyle={currentBackgroundStyle} />
+      <SocialIcons backgroundStyle={currentBackgroundStyle} />
       
       <Hero 
-        backgroundStyle={getCurrentBackgroundStyle()}
+        backgroundStyle={currentBackgroundStyle}
         isAnimated={getCurrentIsAnimated()}
       >
         {mode === 'pattern' && (
