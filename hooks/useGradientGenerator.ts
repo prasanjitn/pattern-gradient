@@ -50,25 +50,46 @@ export function useGradientGenerator() {
       });
   }, []);
 
-  // Generate random gradient
+  // Generate random gradient with improved randomization
   const generateRandom = () => {
     if (gradients.length === 0) return;
     
     const randomGradient = gradients[Math.floor(Math.random() * gradients.length)];
-    const randomColors = [
-      '#ff6b6b', '#4ecdc4', '#45b7d1', '#96ceb4', '#feca57', '#ff9ff3', '#54a0ff', '#5f27cd',
-      '#00d2d3', '#ff9f43', '#10ac84', '#ee5a24', '#0abde3', '#3867d6', '#8854d0', '#a55eea'
+    
+    // More balanced color palette
+    const vibrantColors = [
+      '#ff6b6b', '#4ecdc4', '#45b7d1', '#96ceb4', '#feca57', '#ff9ff3', 
+      '#54a0ff', '#5f27cd', '#00d2d3', '#ff9f43', '#10ac84', '#ee5a24', 
+      '#0abde3', '#3867d6', '#8854d0', '#a55eea', '#26de81', '#fd79a8',
+      '#fdcb6e', '#6c5ce7', '#74b9ff', '#00b894', '#e17055', '#81ecec'
     ];
     
+    const pastelColors = [
+      '#ffeaa7', '#fab1a0', '#ff7675', '#fd79a8', '#fdcb6e', '#e17055',
+      '#74b9ff', '#0984e3', '#00b894', '#00cec9', '#6c5ce7', '#a29bfe',
+      '#ddd6fe', '#fecaca', '#fed7d7', '#d1fae5', '#dbeafe', '#e0e7ff'
+    ];
+    
+    // Mix vibrant and pastel colors for better balance
+    const allColors = [...vibrantColors, ...pastelColors];
+    
     setSelectedGradient(randomGradient.id);
-    setColor1(randomColors[Math.floor(Math.random() * randomColors.length)]);
-    setColor2(randomColors[Math.floor(Math.random() * randomColors.length)]);
-    setColor3(randomColors[Math.floor(Math.random() * randomColors.length)]);
-    setColor4(randomColors[Math.floor(Math.random() * randomColors.length)]);
-    setOpacity(Math.floor(Math.random() * 50) + 50); // 50-100%
+    setColor1(allColors[Math.floor(Math.random() * allColors.length)]);
+    setColor2(allColors[Math.floor(Math.random() * allColors.length)]);
+    setColor3(allColors[Math.floor(Math.random() * allColors.length)]);
+    setColor4(allColors[Math.floor(Math.random() * allColors.length)]);
+    
+    // More balanced opacity range (70-95% instead of 50-100%)
+    setOpacity(Math.floor(Math.random() * 26) + 70);
+    
     setAngle(Math.floor(Math.random() * 24) * 15); // 0-360 in 15° steps
-    setIsAnimated(Math.random() > 0.5);
-    setAnimationSpeed(Math.floor(Math.random() * 15) + 5); // 5-20
+    
+    // 30% chance of animation (less overwhelming)
+    setIsAnimated(Math.random() > 0.7);
+    
+    // More reasonable animation speed range
+    setAnimationSpeed(Math.floor(Math.random() * 8) + 6); // 6-14
+    
     setAnimationDirection(['normal', 'reverse', 'alternate', 'alternate-reverse'][Math.floor(Math.random() * 4)]);
   };
 

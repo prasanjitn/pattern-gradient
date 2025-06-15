@@ -10,15 +10,15 @@ interface SocialIconsProps {
 
 export default function SocialIcons({ backgroundStyle = {} }: SocialIconsProps) {
   const { buttonStyles } = useDynamicStyles(backgroundStyle);
+  
+  // Determine if background is bright to adjust glassmorphism
+  const isDarkGlass = buttonStyles.color === '#000000'; // If text should be black, background is bright
 
+  const buttonClassName = `h-10 w-10 p-0 backdrop-blur-sm border border-white/20 transition-all duration-300 rounded-full hover:${isDarkGlass ? 'bg-black/20' : 'bg-white/20'}`;
   const buttonStyle = {
-    backgroundColor: 'rgba(255, 255, 255, 0.1)',
-    backdropFilter: 'blur(8px)',
+    backgroundColor: isDarkGlass ? 'rgba(0, 0, 0, 0.15)' : 'rgba(255, 255, 255, 0.15)',
+    borderColor: isDarkGlass ? 'rgba(0, 0, 0, 0.2)' : 'rgba(255, 255, 255, 0.2)',
     color: buttonStyles.color,
-    borderWidth: '2px',
-    borderStyle: 'solid' as const,
-    borderColor: buttonStyles.borderColor,
-    boxShadow: `0 4px 16px ${buttonStyles.shadowColor}`,
   };
 
   return (
@@ -27,14 +27,8 @@ export default function SocialIcons({ backgroundStyle = {} }: SocialIconsProps) 
         asChild
         variant="ghost"
         size="sm"
-        className="h-10 w-10 p-0 transition-all duration-300 rounded-full"
+        className={buttonClassName}
         style={buttonStyle}
-        onMouseEnter={(e) => {
-          e.currentTarget.style.backgroundColor = buttonStyles.hoverBg;
-        }}
-        onMouseLeave={(e) => {
-          e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.1)';
-        }}
       >
         <a
           href="https://github.com/prasanjitn/"
@@ -42,7 +36,7 @@ export default function SocialIcons({ backgroundStyle = {} }: SocialIconsProps) 
           rel="noopener noreferrer"
           title="GitHub"
         >
-          <Github className="h-5 w-5" style={{ color: buttonStyles.color }} />
+          <Github className="h-5 w-5" />
         </a>
       </Button>
       
@@ -50,14 +44,8 @@ export default function SocialIcons({ backgroundStyle = {} }: SocialIconsProps) 
         asChild
         variant="ghost"
         size="sm"
-        className="h-10 w-10 p-0 transition-all duration-300 rounded-full"
+        className={buttonClassName}
         style={buttonStyle}
-        onMouseEnter={(e) => {
-          e.currentTarget.style.backgroundColor = buttonStyles.hoverBg;
-        }}
-        onMouseLeave={(e) => {
-          e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.1)';
-        }}
       >
         <a
           href="https://www.linkedin.com/in/prasanjitnayak/"
@@ -65,7 +53,7 @@ export default function SocialIcons({ backgroundStyle = {} }: SocialIconsProps) 
           rel="noopener noreferrer"
           title="LinkedIn"
         >
-          <Linkedin className="h-5 w-5" style={{ color: buttonStyles.color }} />
+          <Linkedin className="h-5 w-5" />
         </a>
       </Button>
       
@@ -73,14 +61,8 @@ export default function SocialIcons({ backgroundStyle = {} }: SocialIconsProps) 
         asChild
         variant="ghost"
         size="sm"
-        className="h-10 w-10 p-0 transition-all duration-300 rounded-full"
+        className={buttonClassName}
         style={buttonStyle}
-        onMouseEnter={(e) => {
-          e.currentTarget.style.backgroundColor = buttonStyles.hoverBg;
-        }}
-        onMouseLeave={(e) => {
-          e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.1)';
-        }}
       >
         <a
           href="https://prasanjitn.github.io/"
@@ -88,7 +70,7 @@ export default function SocialIcons({ backgroundStyle = {} }: SocialIconsProps) 
           rel="noopener noreferrer"
           title="Portfolio"
         >
-          <User className="h-5 w-5" style={{ color: buttonStyles.color }} />
+          <User className="h-5 w-5" />
         </a>
       </Button>
     </div>
