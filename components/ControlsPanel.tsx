@@ -61,8 +61,8 @@ export default function ControlsPanel({
   const [isCollapsed, setIsCollapsed] = useState(false);
 
   return (
-    <Card className="w-full max-w-5xl mx-auto bg-white/95 backdrop-blur-lg border border-gray-200 shadow-2xl z-20 rounded-2xl">
-      <CardHeader className="pb-3 bg-white/95 backdrop-blur-lg z-10 border-b border-gray-200 rounded-t-2xl">
+    <Card className="w-full max-w-5xl mx-auto bg-white/10 backdrop-blur-lg border border-white/20 shadow-2xl z-20 rounded-2xl">
+      <CardHeader className="pb-3 bg-white/10 backdrop-blur-lg z-10 border-b border-white/10 rounded-t-2xl">
         <div className="flex items-center justify-between">
           <CardTitle className="text-xl text-black font-semibold">
             Pattern Controls
@@ -72,7 +72,7 @@ export default function ControlsPanel({
               onClick={onReset}
               variant="ghost"
               size="sm"
-              className="h-8 px-2 hover:bg-gray-100 text-black"
+              className="h-8 px-2 hover:bg-white/20 text-black"
               title="Reset to defaults"
             >
               <RotateCcw className="h-4 w-4 text-black" />
@@ -81,7 +81,7 @@ export default function ControlsPanel({
               variant="ghost"
               size="sm"
               onClick={() => setIsCollapsed(!isCollapsed)}
-              className="h-8 w-8 p-0 hover:bg-gray-100 text-black"
+              className="h-8 w-8 p-0 hover:bg-white/20 text-black"
             >
               {isCollapsed ? <ChevronDown className="h-4 w-4 text-black" /> : <ChevronUp className="h-4 w-4 text-black" />}
             </Button>
@@ -90,7 +90,7 @@ export default function ControlsPanel({
       </CardHeader>
       
       {!isCollapsed && (
-        <CardContent className="grid grid-cols-1 md:grid-cols-3 gap-6 p-6 bg-white/95">
+        <CardContent className="grid grid-cols-1 md:grid-cols-3 gap-6 p-6">
           {/* Pattern Selection */}
           <div className="space-y-4">
             <Label className="text-sm font-semibold flex items-center gap-2 text-black">
@@ -98,7 +98,7 @@ export default function ControlsPanel({
               Pattern Type
             </Label>
             <Select value={selectedPattern} onValueChange={onPatternChange}>
-              <SelectTrigger className="bg-white border-gray-300 text-black">
+              <SelectTrigger className="bg-white/10 backdrop-blur-sm border-white/20 text-black">
                 <SelectValue placeholder="Select a pattern" />
               </SelectTrigger>
               <SelectContent>
@@ -117,7 +117,7 @@ export default function ControlsPanel({
             <div className="space-y-3">
               <div className="flex items-center justify-between">
                 <Label className="text-sm font-semibold text-black">Spacing</Label>
-                <span className="text-sm text-gray-600">{spacing}px</span>
+                <span className="text-sm text-gray-700">{spacing}px</span>
               </div>
               <Slider
                 value={[spacing]}
@@ -139,37 +139,37 @@ export default function ControlsPanel({
             
             <div className="space-y-3">
               <div className="space-y-2">
-                <Label className="text-xs text-gray-600">Foreground</Label>
+                <Label className="text-xs text-gray-700">Foreground</Label>
                 <div className="flex items-center gap-2">
                   <input
                     type="color"
                     value={foregroundColor}
                     onChange={(e) => onForegroundColorChange(e.target.value)}
-                    className="w-10 h-8 rounded-md border-2 border-gray-300 cursor-pointer flex-shrink-0"
+                    className="w-10 h-8 rounded-md border-2 border-white/20 cursor-pointer flex-shrink-0"
                   />
                   <input
                     type="text"
                     value={foregroundColor}
                     onChange={(e) => onForegroundColorChange(e.target.value)}
-                    className="flex-1 px-2 py-1 text-xs border border-gray-300 rounded-md bg-white text-black min-w-0"
+                    className="flex-1 px-2 py-1 text-xs border border-white/20 rounded-md bg-white/10 backdrop-blur-sm text-black min-w-0"
                   />
                 </div>
               </div>
               
               <div className="space-y-2">
-                <Label className="text-xs text-gray-600">Background</Label>
+                <Label className="text-xs text-gray-700">Background</Label>
                 <div className="flex items-center gap-2">
                   <input
                     type="color"
                     value={backgroundColor}
                     onChange={(e) => onBackgroundColorChange(e.target.value)}
-                    className="w-10 h-8 rounded-md border-2 border-gray-300 cursor-pointer flex-shrink-0"
+                    className="w-10 h-8 rounded-md border-2 border-white/20 cursor-pointer flex-shrink-0"
                   />
                   <input
                     type="text"
                     value={backgroundColor}
                     onChange={(e) => onBackgroundColorChange(e.target.value)}
-                    className="flex-1 px-2 py-1 text-xs border border-gray-300 rounded-md bg-white text-black min-w-0"
+                    className="flex-1 px-2 py-1 text-xs border border-white/20 rounded-md bg-white/10 backdrop-blur-sm text-black min-w-0"
                   />
                 </div>
               </div>
@@ -179,7 +179,7 @@ export default function ControlsPanel({
             <div className="space-y-3">
               <div className="flex items-center justify-between">
                 <Label className="text-sm font-semibold text-black">Opacity</Label>
-                <span className="text-sm text-gray-600">{opacity}%</span>
+                <span className="text-sm text-gray-700">{opacity}%</span>
               </div>
               <Slider
                 value={[opacity]}
@@ -196,7 +196,7 @@ export default function ControlsPanel({
             <div className="flex items-center justify-between">
               <div>
                 <Label className="text-sm font-semibold text-black">Animated Pattern</Label>
-                <p className="text-xs text-gray-600">Add flowing animation</p>
+                <p className="text-xs text-gray-700">Add flowing animation</p>
               </div>
               <Switch
                 checked={isAnimated}
@@ -205,7 +205,7 @@ export default function ControlsPanel({
             </div>
 
             {isAnimated && (
-              <div className="space-y-4 pt-2 border-t border-gray-200">
+              <div className="space-y-4 pt-2 border-t border-white/10">
                 {/* Animation Speed */}
                 <div className="space-y-3">
                   <div className="flex items-center justify-between">
@@ -213,7 +213,7 @@ export default function ControlsPanel({
                       <Zap className="h-4 w-4 text-black" />
                       Speed
                     </Label>
-                    <span className="text-sm text-gray-600">{animationSpeed}/20</span>
+                    <span className="text-sm text-gray-700">{animationSpeed}/20</span>
                   </div>
                   <Slider
                     value={[animationSpeed]}
@@ -232,7 +232,7 @@ export default function ControlsPanel({
                     Direction
                   </Label>
                   <Select value={animationDirection} onValueChange={onAnimationDirectionChange}>
-                    <SelectTrigger className="bg-white border-gray-300 text-black">
+                    <SelectTrigger className="bg-white/10 backdrop-blur-sm border-white/20 text-black">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
