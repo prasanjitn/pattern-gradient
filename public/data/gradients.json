@@ -22,6 +22,13 @@
       "basePattern": "linear-gradient(45deg, {color1}, {color2}, {color3}, {color4})"
     },
     {
+      "id": "linear-diagonal-reverse",
+      "name": "Linear Diagonal Reverse",
+      "type": "linear-gradient",
+      "description": "Reverse diagonal gradient",
+      "basePattern": "linear-gradient(135deg, {color1}, {color2}, {color3}, {color4})"
+    },
+    {
       "id": "radial-center",
       "name": "Radial Center",
       "type": "radial-gradient",
@@ -36,11 +43,25 @@
       "basePattern": "radial-gradient(circle at top left, {color1}, {color2}, {color3}, {color4})"
     },
     {
+      "id": "radial-ellipse",
+      "name": "Radial Ellipse",
+      "type": "radial-gradient",
+      "description": "Elliptical radial gradient",
+      "basePattern": "radial-gradient(ellipse at center, {color1}, {color2}, {color3}, {color4})"
+    },
+    {
       "id": "conic-center",
       "name": "Conic Center",
       "type": "conic-gradient",
       "description": "Conic gradient from center",
       "basePattern": "conic-gradient(from 0deg at center, {color1}, {color2}, {color3}, {color4}, {color1})"
+    },
+    {
+      "id": "conic-corner",
+      "name": "Conic Corner",
+      "type": "conic-gradient",
+      "description": "Conic gradient from corner",
+      "basePattern": "conic-gradient(from 45deg at top left, {color1}, {color2}, {color3}, {color4}, {color1})"
     },
     {
       "id": "sunset",
@@ -55,6 +76,34 @@
       "type": "conic-gradient",
       "description": "Rainbow spectrum",
       "basePattern": "conic-gradient(from 90deg at center, {color1}, {color2}, {color3}, {color4}, {color1})"
+    },
+    {
+      "id": "mesh",
+      "name": "Mesh Gradient",
+      "type": "radial-gradient",
+      "description": "Complex mesh-like gradient",
+      "basePattern": "radial-gradient(at 40% 20%, {color1} 0px, transparent 50%), radial-gradient(at 80% 0%, {color2} 0px, transparent 50%), radial-gradient(at 0% 50%, {color3} 0px, transparent 50%), radial-gradient(at 80% 50%, {color4} 0px, transparent 50%)"
+    },
+    {
+      "id": "spotlight",
+      "name": "Spotlight",
+      "type": "radial-gradient",
+      "description": "Spotlight effect gradient",
+      "basePattern": "radial-gradient(circle at 30% 30%, {color1}, {color2} 30%, {color3} 60%, {color4})"
+    },
+    {
+      "id": "wave-gradient",
+      "name": "Wave Gradient",
+      "type": "linear-gradient",
+      "description": "Flowing wave gradient",
+      "basePattern": "linear-gradient(45deg, {color1} 0%, {color2} 25%, {color3} 50%, {color4} 75%, {color1} 100%)"
+    },
+    {
+      "id": "double-radial",
+      "name": "Double Radial",
+      "type": "radial-gradient",
+      "description": "Two overlapping radial gradients",
+      "basePattern": "radial-gradient(circle at 25% 25%, {color1}, transparent 70%), radial-gradient(circle at 75% 75%, {color2}, {color3}, {color4})"
     }
   ]
 }

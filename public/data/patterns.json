@@ -1,18 +1,18 @@
 {
   "patterns": [
     {
+      "id": "dots",
+      "name": "Polka Dots",
+      "type": "radial-gradient",
+      "description": "Circular dot pattern",
+      "basePattern": "radial-gradient(circle at center, {fg} 2px, transparent 2px)"
+    },
+    {
       "id": "stripes",
       "name": "Diagonal Stripes",
       "type": "linear-gradient",
       "description": "Classic diagonal stripe pattern",
       "basePattern": "repeating-linear-gradient(45deg, {fg} 0px, {fg} {spacing}px, transparent {spacing}px, transparent {doubleSpacing}px)"
-    },
-    {
-      "id": "dots",
-      "name": "Polka Dots",
-      "type": "radial-gradient",
-      "description": "Circular dot pattern",
-      "basePattern": "radial-gradient(circle at {spacing}px {spacing}px, {fg} 2px, transparent 2px)"
     },
     {
       "id": "waves",
@@ -76,6 +76,34 @@
       "type": "linear-gradient",
       "description": "Classic brick wall pattern",
       "basePattern": "repeating-linear-gradient(0deg, {fg} 0px, {fg} 2px, transparent 2px, transparent {spacing}px), repeating-linear-gradient(90deg, {fg} 0px, {fg} 2px, transparent 2px, transparent {doubleSpacing}px)"
+    },
+    {
+      "id": "crosshatch",
+      "name": "Crosshatch",
+      "type": "linear-gradient",
+      "description": "Crosshatch drawing pattern",
+      "basePattern": "repeating-linear-gradient(45deg, transparent, transparent {spacing}px, {fg} {spacing}px, {fg} calc({spacing}px + 2px)), repeating-linear-gradient(-45deg, transparent, transparent {spacing}px, {fg} {spacing}px, {fg} calc({spacing}px + 2px))"
+    },
+    {
+      "id": "diamond",
+      "name": "Diamond",
+      "type": "linear-gradient",
+      "description": "Diamond lattice pattern",
+      "basePattern": "repeating-conic-gradient(from 0deg at 50% 50%, {fg} 0deg 90deg, transparent 90deg 180deg, {fg} 180deg 270deg, transparent 270deg 360deg)"
+    },
+    {
+      "id": "zigzag",
+      "name": "Zigzag",
+      "type": "linear-gradient",
+      "description": "Sharp zigzag pattern",
+      "basePattern": "repeating-linear-gradient(135deg, {fg} 0px, {fg} {spacing}px, transparent {spacing}px, transparent {doubleSpacing}px), repeating-linear-gradient(45deg, transparent 0px, transparent {spacing}px, {fg} {spacing}px, {fg} {doubleSpacing}px)"
+    },
+    {
+      "id": "scales",
+      "name": "Fish Scales",
+      "type": "radial-gradient",
+      "description": "Overlapping scale pattern",
+      "basePattern": "radial-gradient(circle at 100% 50%, transparent 20%, {fg} 21%, {fg} 34%, transparent 35%, transparent), linear-gradient({fg} 50%, transparent 50%)"
     }
   ]
 }

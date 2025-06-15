@@ -10,8 +10,68 @@ interface Pattern {
   basePattern: string;
 }
 
+// Fallback patterns in case JSON loading fails
+const FALLBACK_PATTERNS: Pattern[] = [
+  {
+    id: 'dots',
+    name: 'Polka Dots',
+    type: 'radial-gradient',
+    description: 'Circular dot pattern',
+    basePattern: 'radial-gradient(circle at center, {fg} 2px, transparent 2px)'
+  },
+  {
+    id: 'stripes',
+    name: 'Diagonal Stripes',
+    type: 'linear-gradient',
+    description: 'Classic diagonal stripe pattern',
+    basePattern: 'repeating-linear-gradient(45deg, {fg} 0px, {fg} {spacing}px, transparent {spacing}px, transparent {doubleSpacing}px)'
+  },
+  {
+    id: 'waves',
+    name: 'Wave Pattern',
+    type: 'linear-gradient',
+    description: 'Flowing wave design',
+    basePattern: 'repeating-linear-gradient(0deg, {fg} 0px, {fg} {spacing}px, transparent {spacing}px, transparent {doubleSpacing}px)'
+  },
+  {
+    id: 'grid',
+    name: 'Grid Lines',
+    type: 'linear-gradient',
+    description: 'Clean grid pattern',
+    basePattern: 'linear-gradient({fg} 1px, transparent 1px), linear-gradient(90deg, {fg} 1px, transparent 1px)'
+  },
+  {
+    id: 'chevron',
+    name: 'Chevron',
+    type: 'linear-gradient',
+    description: 'Zigzag chevron pattern',
+    basePattern: 'repeating-linear-gradient(45deg, {fg} 0px, {fg} {spacing}px, transparent {spacing}px, transparent {doubleSpacing}px)'
+  },
+  {
+    id: 'hexagon',
+    name: 'Hexagon',
+    type: 'radial-gradient',
+    description: 'Hexagonal pattern',
+    basePattern: 'radial-gradient(circle at 50% 50%, {fg} 30%, transparent 30%)'
+  },
+  {
+    id: 'triangles',
+    name: 'Triangles',
+    type: 'linear-gradient',
+    description: 'Geometric triangle pattern',
+    basePattern: 'repeating-linear-gradient(60deg, {fg} 0px, {fg} {spacing}px, transparent {spacing}px, transparent {doubleSpacing}px)'
+  },
+  {
+    id: 'circles',
+    name: 'Circles',
+    type: 'radial-gradient',
+    description: 'Overlapping circle pattern',
+    basePattern: 'radial-gradient(circle at 25% 25%, {fg} {spacing}px, transparent {spacing}px)'
+  }
+];
+
 export function usePatternGenerator() {
-  const [patterns, setPatterns] = useState<Pattern[]>([]);
+  const [patterns, setPatterns] = useState<Pattern[]>(FALLBACK_PATTERNS);
   const [selectedPattern, setSelectedPattern] = useState('dots');
   const [foregroundColor, setForegroundColor] = useState('#254ef4');
   const [backgroundColor, setBackgroundColor] = useState('#f0fff1');
@@ -21,31 +81,30 @@ export function usePatternGenerator() {
   const [animationSpeed, setAnimationSpeed] = useState(10);
   const [animationDirection, setAnimationDirection] = useState('normal');
 
-  // Load patterns from JSON
+  // Load patterns from JSON with better error handling
   useEffect(() => {
-    fetch('/data/patterns.json')
-      .then(response => {
+    const loadPatterns = async () => {
+      try {
+        const response = await fetch('/data/patterns.json');
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
-        return response.json();
-      })
-      .then(data => {
-        setPatterns(data.patterns);
-      })
-      .catch(error => {
+        const data = await response.json();
+        if (data && data.patterns && Array.isArray(data.patterns) && data.patterns.length > 0) {
+          setPatterns(data.patterns);
+          console.log('Loaded patterns:', data.patterns.length);
+        } else {
+          console.warn('Invalid patterns data, using fallback');
+          setPatterns(FALLBACK_PATTERNS);
+        }
+      } catch (error) {
         console.error('Error loading patterns:', error);
-        // Fallback patterns in case of error
-        setPatterns([
-          {
-            id: 'dots',
-            name: 'Polka Dots',
-            type: 'radial-gradient',
-            description: 'Circular dot pattern',
-            basePattern: 'radial-gradient(circle at {spacing}px {spacing}px, {fg} 2px, transparent 2px)'
-          }
-        ]);
-      });
+        console.log('Using fallback patterns');
+        setPatterns(FALLBACK_PATTERNS);
+      }
+    };
+
+    loadPatterns();
   }, []);
 
   // Generate random pattern with improved randomization

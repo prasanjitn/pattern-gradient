@@ -18,9 +18,58 @@ interface Gradient {
   basePattern: string;
 }
 
+// Fallback data in case JSON loading fails
+const FALLBACK_PATTERNS: Pattern[] = [
+  {
+    id: 'stripes',
+    name: 'Diagonal Stripes',
+    type: 'linear-gradient',
+    description: 'Classic diagonal stripe pattern',
+    basePattern: 'repeating-linear-gradient(45deg, {fg} 0px, {fg} {spacing}px, transparent {spacing}px, transparent {doubleSpacing}px)'
+  },
+  {
+    id: 'dots',
+    name: 'Polka Dots',
+    type: 'radial-gradient',
+    description: 'Circular dot pattern',
+    basePattern: 'radial-gradient(circle at center, {fg} 2px, transparent 2px)'
+  },
+  {
+    id: 'grid',
+    name: 'Grid Lines',
+    type: 'linear-gradient',
+    description: 'Clean grid pattern',
+    basePattern: 'linear-gradient({fg} 1px, transparent 1px), linear-gradient(90deg, {fg} 1px, transparent 1px)'
+  }
+];
+
+const FALLBACK_GRADIENTS: Gradient[] = [
+  {
+    id: 'linear-vertical',
+    name: 'Linear Vertical',
+    type: 'linear-gradient',
+    description: 'Vertical gradient',
+    basePattern: 'linear-gradient(0deg, {color1}, {color2}, {color3}, {color4})'
+  },
+  {
+    id: 'radial-center',
+    name: 'Radial Center',
+    type: 'radial-gradient',
+    description: 'Radial from center',
+    basePattern: 'radial-gradient(circle at center, {color1}, {color2}, {color3}, {color4})'
+  },
+  {
+    id: 'conic-center',
+    name: 'Conic Center',
+    type: 'conic-gradient',
+    description: 'Conic gradient from center',
+    basePattern: 'conic-gradient(from 0deg at center, {color1}, {color2}, {color3}, {color4}, {color1})'
+  }
+];
+
 export function useHybridGenerator() {
-  const [patterns, setPatterns] = useState<Pattern[]>([]);
-  const [gradients, setGradients] = useState<Gradient[]>([]);
+  const [patterns, setPatterns] = useState<Pattern[]>(FALLBACK_PATTERNS);
+  const [gradients, setGradients] = useState<Gradient[]>(FALLBACK_GRADIENTS);
   const [selectedPattern, setSelectedPattern] = useState('stripes');
   const [selectedGradient, setSelectedGradient] = useState('linear-vertical');
   const [patternColor, setPatternColor] = useState('#feca57');
@@ -36,48 +85,53 @@ export function useHybridGenerator() {
   const [animationSpeed, setAnimationSpeed] = useState(5);
   const [animationDirection, setAnimationDirection] = useState('normal');
 
-  // Load patterns and gradients from JSON
+  // Load patterns and gradients from JSON with better error handling
   useEffect(() => {
-    Promise.all([
-      fetch('/data/patterns.json').then(response => {
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
+    const loadData = async () => {
+      try {
+        const [patternsResponse, gradientsResponse] = await Promise.all([
+          fetch('/data/patterns.json'),
+          fetch('/data/gradients.json')
+        ]);
+
+        let patternsData = FALLBACK_PATTERNS;
+        let gradientsData = FALLBACK_GRADIENTS;
+
+        if (patternsResponse.ok) {
+          const patternsJson = await patternsResponse.json();
+          if (patternsJson && patternsJson.patterns && Array.isArray(patternsJson.patterns) && patternsJson.patterns.length > 0) {
+            patternsData = patternsJson.patterns;
+            console.log('Loaded patterns:', patternsData.length);
+          } else {
+            console.warn('Invalid patterns data, using fallback');
+          }
+        } else {
+          console.warn('Failed to load patterns, using fallback');
         }
-        return response.json();
-      }),
-      fetch('/data/gradients.json').then(response => {
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
+
+        if (gradientsResponse.ok) {
+          const gradientsJson = await gradientsResponse.json();
+          if (gradientsJson && gradientsJson.gradients && Array.isArray(gradientsJson.gradients) && gradientsJson.gradients.length > 0) {
+            gradientsData = gradientsJson.gradients;
+            console.log('Loaded gradients:', gradientsData.length);
+          } else {
+            console.warn('Invalid gradients data, using fallback');
+          }
+        } else {
+          console.warn('Failed to load gradients, using fallback');
         }
-        return response.json();
-      })
-    ])
-      .then(([patternsData, gradientsData]) => {
-        setPatterns(patternsData.patterns);
-        setGradients(gradientsData.gradients);
-      })
-      .catch(error => {
+
+        setPatterns(patternsData);
+        setGradients(gradientsData);
+      } catch (error) {
         console.error('Error loading data:', error);
-        // Fallback data
-        setPatterns([
-          {
-            id: 'stripes',
-            name: 'Diagonal Stripes',
-            type: 'linear-gradient',
-            description: 'Classic diagonal stripe pattern',
-            basePattern: 'repeating-linear-gradient(45deg, {fg} 0px, {fg} {spacing}px, transparent {spacing}px, transparent {doubleSpacing}px)'
-          }
-        ]);
-        setGradients([
-          {
-            id: 'linear-vertical',
-            name: 'Linear Vertical',
-            type: 'linear-gradient',
-            description: 'Vertical gradient',
-            basePattern: 'linear-gradient(0deg, {color1}, {color2}, {color3}, {color4})'
-          }
-        ]);
-      });
+        console.log('Using fallback data');
+        setPatterns(FALLBACK_PATTERNS);
+        setGradients(FALLBACK_GRADIENTS);
+      }
+    };
+
+    loadData();
   }, []);
 
   // Generate random hybrid with improved randomization

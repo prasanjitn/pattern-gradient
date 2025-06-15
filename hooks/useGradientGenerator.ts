@@ -10,8 +10,47 @@ interface Gradient {
   basePattern: string;
 }
 
+// Fallback gradients in case JSON loading fails
+const FALLBACK_GRADIENTS: Gradient[] = [
+  {
+    id: 'linear-horizontal',
+    name: 'Linear Horizontal',
+    type: 'linear-gradient',
+    description: 'Left to right gradient',
+    basePattern: 'linear-gradient(90deg, {color1}, {color2}, {color3}, {color4})'
+  },
+  {
+    id: 'linear-vertical',
+    name: 'Linear Vertical',
+    type: 'linear-gradient',
+    description: 'Top to bottom gradient',
+    basePattern: 'linear-gradient(180deg, {color1}, {color2}, {color3}, {color4})'
+  },
+  {
+    id: 'linear-diagonal',
+    name: 'Linear Diagonal',
+    type: 'linear-gradient',
+    description: 'Diagonal gradient',
+    basePattern: 'linear-gradient(45deg, {color1}, {color2}, {color3}, {color4})'
+  },
+  {
+    id: 'radial-center',
+    name: 'Radial Center',
+    type: 'radial-gradient',
+    description: 'Radial from center',
+    basePattern: 'radial-gradient(circle at center, {color1}, {color2}, {color3}, {color4})'
+  },
+  {
+    id: 'conic-center',
+    name: 'Conic Center',
+    type: 'conic-gradient',
+    description: 'Conic gradient from center',
+    basePattern: 'conic-gradient(from 0deg at center, {color1}, {color2}, {color3}, {color4}, {color1})'
+  }
+];
+
 export function useGradientGenerator() {
-  const [gradients, setGradients] = useState<Gradient[]>([]);
+  const [gradients, setGradients] = useState<Gradient[]>(FALLBACK_GRADIENTS);
   const [selectedGradient, setSelectedGradient] = useState('conic-center');
   const [color1, setColor1] = useState('#ee7cd9');
   const [color2, setColor2] = useState('#8ad1f5');
@@ -23,31 +62,30 @@ export function useGradientGenerator() {
   const [animationSpeed, setAnimationSpeed] = useState(5);
   const [animationDirection, setAnimationDirection] = useState('normal');
 
-  // Load gradients from JSON
+  // Load gradients from JSON with better error handling
   useEffect(() => {
-    fetch('/data/gradients.json')
-      .then(response => {
+    const loadGradients = async () => {
+      try {
+        const response = await fetch('/data/gradients.json');
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
-        return response.json();
-      })
-      .then(data => {
-        setGradients(data.gradients);
-      })
-      .catch(error => {
+        const data = await response.json();
+        if (data && data.gradients && Array.isArray(data.gradients) && data.gradients.length > 0) {
+          setGradients(data.gradients);
+          console.log('Loaded gradients:', data.gradients.length);
+        } else {
+          console.warn('Invalid gradients data, using fallback');
+          setGradients(FALLBACK_GRADIENTS);
+        }
+      } catch (error) {
         console.error('Error loading gradients:', error);
-        // Fallback gradients in case of error
-        setGradients([
-          {
-            id: 'conic-center',
-            name: 'Conic Center',
-            type: 'conic-gradient',
-            description: 'Conic gradient from center',
-            basePattern: 'conic-gradient(from 0deg at center, {color1}, {color2}, {color3}, {color4}, {color1})'
-          }
-        ]);
-      });
+        console.log('Using fallback gradients');
+        setGradients(FALLBACK_GRADIENTS);
+      }
+    };
+
+    loadGradients();
   }, []);
 
   // Generate random gradient with improved randomization
