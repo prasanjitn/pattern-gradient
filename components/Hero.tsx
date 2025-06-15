@@ -2,6 +2,7 @@
 
 import { Button } from '@/components/ui/button';
 import { Heart } from 'lucide-react';
+import SocialIcons from '@/components/SocialIcons';
 
 interface HeroProps {
   backgroundStyle: React.CSSProperties;
@@ -32,6 +33,11 @@ export default function Hero({ backgroundStyle, isAnimated, children }: HeroProp
       {/* Subtle Overlay for better text readability - reduced opacity */}
       <div className="absolute inset-0 bg-gradient-to-b from-black/10 via-transparent to-black/10 z-2" />
       
+      {/* Social Icons - Fixed position on desktop, hidden on mobile */}
+      <div className="fixed top-6 right-6 z-30 hidden md:flex">
+        <SocialIcons backgroundStyle={backgroundStyle} />
+      </div>
+      
       {/* Content - Just the subheader now, positioned closer to controls with more space from toggle */}
       <div className="relative z-10 text-center max-w-4xl mx-auto px-6 mb-3 mt-20">
         <p className="text-xl md:text-2xl mb-4 leading-relaxed max-w-2xl mx-auto text-white font-extrabold drop-shadow-lg" style={{ fontFamily: 'sans-serif' }}>
@@ -43,6 +49,11 @@ export default function Hero({ backgroundStyle, isAnimated, children }: HeroProp
       {/* Controls Panel */}
       <div className="relative z-10 w-full max-w-5xl mx-auto px-6 mb-6">
         {children}
+      </div>
+      
+      {/* Social Icons - Mobile only, above support button */}
+      <div className="relative z-10 flex justify-center mb-4 md:hidden">
+        <SocialIcons backgroundStyle={backgroundStyle} />
       </div>
       
       {/* Support Button */}

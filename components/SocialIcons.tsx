@@ -22,7 +22,7 @@ export default function SocialIcons({ backgroundStyle = {} }: SocialIconsProps) 
   };
 
   return (
-    <div className="fixed top-6 right-6 z-30 flex items-center gap-2">
+    <div className="flex items-center justify-center gap-2">
       <Button
         asChild
         variant="ghost"
