@@ -115,14 +115,14 @@ export function useHybridGenerator() {
     setAnimationDirection('normal');
   };
 
-  // Generate background style
+  // Generate background style - Fixed to work like gradient panel
   const backgroundStyle = useMemo(() => {
     const currentPattern = patterns.find(p => p.id === selectedPattern);
     const currentGradient = gradients.find(g => g.id === selectedGradient);
     
     if (!currentPattern || !currentGradient) return { backgroundColor: '#ffffff' };
 
-    // Generate gradient (background layer)
+    // Generate gradient (background layer) - exactly like gradient panel
     let gradient = currentGradient.basePattern
       .replace(/{color1}/g, gradientColor1)
       .replace(/{color2}/g, gradientColor2)
@@ -134,7 +134,7 @@ export function useHybridGenerator() {
       gradient = gradient.replace(/\d+deg/, `${gradientAngle}deg`);
     }
 
-    // Generate pattern (foreground layer) - always with transparent background
+    // Generate pattern (foreground layer) with transparency
     const doubleSpacing = spacing * 2;
     let pattern = currentPattern.basePattern
       .replace(/{fg}/g, patternColor)
@@ -142,10 +142,17 @@ export function useHybridGenerator() {
       .replace(/{spacing}/g, spacing.toString())
       .replace(/{doubleSpacing}/g, doubleSpacing.toString());
 
+    // Apply pattern opacity by modifying the pattern color
+    const patternWithOpacity = pattern.replace(
+      new RegExp(patternColor, 'g'), 
+      patternColor + Math.round(patternOpacity * 2.55).toString(16).padStart(2, '0')
+    );
+
     const style: React.CSSProperties = {
-      backgroundColor: '#ffffff', // Always white background
-      // Gradient as background, pattern as overlay
-      backgroundImage: `${pattern}, ${gradient}`,
+      backgroundColor: '#ffffff',
+      // Pattern as overlay, gradient as background - same order as gradient panel
+      backgroundImage: `${patternWithOpacity}, ${gradient}`,
+      opacity: gradientOpacity / 100, // Apply gradient opacity to the whole element
       transition: 'all 0.3s ease-in-out',
     };
 
@@ -158,16 +165,13 @@ export function useHybridGenerator() {
       style.backgroundSize = 'auto, 400% 400%';
     }
 
-    // Apply opacity
-    style.opacity = gradientOpacity / 100;
-
-    // Add animation if enabled - make it continuous
+    // Add animation if enabled - same as gradient panel
     if (isAnimated) {
       const duration = 21 - animationSpeed;
       if (currentGradient.type === 'conic-gradient') {
-        style.animation = `hybridMoveConic ${duration}s linear infinite ${animationDirection}`;
+        style.animation = `gradientSpin ${duration}s linear infinite ${animationDirection}`;
       } else {
-        style.animation = `hybridMove ${duration}s linear infinite ${animationDirection}`;
+        style.animation = `gradientShift ${duration}s ease-in-out infinite ${animationDirection}`;
       }
     }
 
@@ -193,7 +197,7 @@ export function useHybridGenerator() {
       gradient = gradient.replace(/\d+deg/, `${gradientAngle}deg`);
     }
 
-    // Generate pattern
+    // Generate pattern with opacity
     const doubleSpacing = spacing * 2;
     let pattern = currentPattern.basePattern
       .replace(/{fg}/g, patternColor)
@@ -201,10 +205,15 @@ export function useHybridGenerator() {
       .replace(/{spacing}/g, spacing.toString())
       .replace(/{doubleSpacing}/g, doubleSpacing.toString());
 
+    // Apply pattern opacity
+    const patternWithOpacity = pattern.replace(
+      new RegExp(patternColor, 'g'), 
+      patternColor + Math.round(patternOpacity * 2.55).toString(16).padStart(2, '0')
+    );
+
     let css = `.hybrid-background {
   background-color: #ffffff;
-  /* Pattern overlay, gradient background */
-  background-image: ${pattern}, ${gradient};`;
+  background-image: ${patternWithOpacity}, ${gradient};`;
 
     // Add background size for certain patterns
     if (selectedPattern === 'dots' || selectedPattern === 'grid') {
@@ -221,51 +230,25 @@ export function useHybridGenerator() {
     if (isAnimated) {
       const duration = 21 - animationSpeed;
       if (currentGradient.type === 'conic-gradient') {
-        css += `\n  animation: hybridMoveConic ${duration}s linear infinite ${animationDirection};`;
+        css += `\n  animation: gradientSpin ${duration}s linear infinite ${animationDirection};`;
       } else {
-        css += `\n  animation: hybridMove ${duration}s linear infinite ${animationDirection};`;
+        css += `\n  animation: gradientShift ${duration}s ease-in-out infinite ${animationDirection};`;
       }
     }
 
     css += `\n}`;
 
-    // Add pattern opacity using pseudo-element
-    css += `\n\n.hybrid-background::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-image: ${pattern};`;
-
-    if (selectedPattern === 'dots' || selectedPattern === 'grid') {
-      css += `\n  background-size: ${spacing}px ${spacing}px;`;
-    } else if (selectedPattern === 'hexagon' || selectedPattern === 'circles') {
-      css += `\n  background-size: ${spacing * 2}px ${spacing * 2}px;`;
-    }
-
-    css += `\n  opacity: ${patternOpacity / 100};
-  pointer-events: none;
-}`;
-
     if (isAnimated) {
       if (currentGradient.type === 'conic-gradient') {
-        css += `\n\n@keyframes hybridMoveConic {
-  0% { 
-    background-position: 0 0, center;
-    transform: rotate(0deg);
-  }
-  100% { 
-    background-position: ${spacing}px ${spacing}px, center;
-    transform: rotate(360deg);
-  }
+        css += `\n\n@keyframes gradientSpin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }`;
       } else {
-        css += `\n\n@keyframes hybridMove {
-  0% { background-position: 0 0, 0% 50%; }
-  50% { background-position: ${spacing}px ${spacing}px, 100% 50%; }
-  100% { background-position: 0 0, 0% 50%; }
+        css += `\n\n@keyframes gradientShift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
 }`;
       }
     }

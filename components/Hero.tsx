@@ -28,14 +28,8 @@ export default function Hero({ backgroundStyle, isAnimated, children }: HeroProp
       {/* Gradient Overlay for better text readability */}
       <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-transparent to-black/30" />
       
-      {/* Content */}
+      {/* Content - Just the subheader now */}
       <div className="relative z-10 text-center max-w-4xl mx-auto px-6 mb-6">
-        <h1 className="text-4xl md:text-6xl font-bold mb-4 leading-tight">
-          <span className={`block ${getTextColor()}`}>
-            CSS Pattern Designer
-          </span>
-        </h1>
-        
         <p className={`text-lg md:text-xl mb-8 leading-relaxed max-w-2xl mx-auto ${getTextColor()}`}>
           Create, preview, and export customizable CSS backgrounds in seconds.
         </p>
