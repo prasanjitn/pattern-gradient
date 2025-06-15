@@ -197,7 +197,7 @@ export function useHybridGenerator() {
       willChange: 'background-image, background-position, transform',
       // Ensure proper color rendering
       imageRendering: 'crisp-edges',
-      WebkitImageRendering: 'crisp-edges',
+      
     };
 
     // Add background size for certain patterns
