@@ -12,19 +12,24 @@ interface Pattern {
 
 export function usePatternGenerator() {
   const [patterns, setPatterns] = useState<Pattern[]>([]);
-  const [selectedPattern, setSelectedPattern] = useState('stripes');
-  const [foregroundColor, setForegroundColor] = useState('#808080'); // Grey
-  const [backgroundColor, setBackgroundColor] = useState('#ffffff'); // White
-  const [opacity, setOpacity] = useState(50); // 50%
-  const [spacing, setSpacing] = useState(20);
+  const [selectedPattern, setSelectedPattern] = useState('dots');
+  const [foregroundColor, setForegroundColor] = useState('#254ef4');
+  const [backgroundColor, setBackgroundColor] = useState('#f0fff1');
+  const [opacity, setOpacity] = useState(100);
+  const [spacing, setSpacing] = useState(30);
   const [isAnimated, setIsAnimated] = useState(false);
-  const [animationSpeed, setAnimationSpeed] = useState(5);
+  const [animationSpeed, setAnimationSpeed] = useState(10);
   const [animationDirection, setAnimationDirection] = useState('normal');
 
   // Load patterns from JSON
   useEffect(() => {
     fetch('/data/patterns.json')
-      .then(response => response.json())
+      .then(response => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+      })
       .then(data => {
         setPatterns(data.patterns);
       })
@@ -33,29 +38,71 @@ export function usePatternGenerator() {
         // Fallback patterns in case of error
         setPatterns([
           {
-            id: 'stripes',
-            name: 'Diagonal Stripes',
-            type: 'linear-gradient',
-            description: 'Classic diagonal stripe pattern',
-            basePattern: 'repeating-linear-gradient(45deg, {fg} 0px, {fg} {spacing}px, {bg} {spacing}px, {bg} {doubleSpacing}px)'
+            id: 'dots',
+            name: 'Polka Dots',
+            type: 'radial-gradient',
+            description: 'Circular dot pattern',
+            basePattern: 'radial-gradient(circle at {spacing}px {spacing}px, {fg} 2px, transparent 2px)'
           }
         ]);
       });
   }, []);
 
+  // Generate random pattern with improved randomization
+  const generateRandom = () => {
+    if (patterns.length === 0) return;
+    
+    const randomPattern = patterns[Math.floor(Math.random() * patterns.length)];
+    
+    // More balanced color palette
+    const vibrantColors = [
+      '#ff6b6b', '#4ecdc4', '#45b7d1', '#96ceb4', '#feca57', '#ff9ff3', 
+      '#54a0ff', '#5f27cd', '#00d2d3', '#ff9f43', '#10ac84', '#ee5a24', 
+      '#0abde3', '#3867d6', '#8854d0', '#a55eea', '#26de81', '#fd79a8',
+      '#fdcb6e', '#6c5ce7', '#74b9ff', '#00b894', '#e17055', '#81ecec'
+    ];
+    
+    const pastelColors = [
+      '#ffeaa7', '#fab1a0', '#ff7675', '#fd79a8', '#fdcb6e', '#e17055',
+      '#74b9ff', '#0984e3', '#00b894', '#00cec9', '#6c5ce7', '#a29bfe',
+      '#ddd6fe', '#fecaca', '#fed7d7', '#d1fae5', '#dbeafe', '#e0e7ff'
+    ];
+    
+    // Mix vibrant and pastel colors for better balance
+    const allColors = [...vibrantColors, ...pastelColors];
+    
+    setSelectedPattern(randomPattern.id);
+    setForegroundColor(allColors[Math.floor(Math.random() * allColors.length)]);
+    setBackgroundColor(allColors[Math.floor(Math.random() * allColors.length)]);
+    
+    // More balanced opacity range (60-95% instead of 50-100%)
+    setOpacity(Math.floor(Math.random() * 36) + 60);
+    
+    // Better spacing distribution
+    setSpacing(Math.floor(Math.random() * 50) + 15); // 15-65px
+    
+    // 40% chance of animation (less overwhelming)
+    setIsAnimated(Math.random() > 0.6);
+    
+    // More reasonable animation speed range
+    setAnimationSpeed(Math.floor(Math.random() * 10) + 8); // 8-18
+    
+    setAnimationDirection(['normal', 'reverse', 'alternate', 'alternate-reverse'][Math.floor(Math.random() * 4)]);
+  };
+
   // Reset function
   const reset = () => {
-    setSelectedPattern('stripes');
-    setForegroundColor('#808080'); // Grey
-    setBackgroundColor('#ffffff'); // White
-    setOpacity(50); // 50%
-    setSpacing(20);
+    setSelectedPattern('dots');
+    setForegroundColor('#254ef4');
+    setBackgroundColor('#f0fff1');
+    setOpacity(100);
+    setSpacing(30);
     setIsAnimated(false);
-    setAnimationSpeed(5);
+    setAnimationSpeed(10);
     setAnimationDirection('normal');
   };
 
-  // Generate background style
+  // Generate background style with improved rendering
   const backgroundStyle = useMemo(() => {
     const currentPattern = patterns.find(p => p.id === selectedPattern);
     if (!currentPattern) return { backgroundColor: '#ffffff' };
@@ -72,6 +119,17 @@ export function usePatternGenerator() {
       backgroundImage: pattern,
       opacity: opacity / 100,
       transition: 'all 0.3s ease-in-out',
+      // Improved rendering properties
+      backgroundAttachment: 'fixed',
+      backgroundRepeat: 'repeat',
+      backgroundPosition: 'center',
+      // Prevent rendering artifacts
+      isolation: 'isolate',
+      transform: 'translateZ(0)',
+      willChange: 'background-image, background-position',
+      // Ensure proper color rendering
+      imageRendering: 'crisp-edges',
+      WebkitImageRendering: 'crisp-edges',
     };
 
     // Add background size for certain patterns
@@ -81,10 +139,12 @@ export function usePatternGenerator() {
       style.backgroundSize = `${spacing * 2}px ${spacing * 2}px`;
     }
 
-    // Add animation if enabled - make it continuous
+    // Add animation if enabled - improved for smoother rendering
     if (isAnimated) {
-      const duration = 21 - animationSpeed; // Convert speed (1-20) to duration (20s-1s)
+      const duration = 21 - animationSpeed;
       style.animation = `patternMove ${duration}s linear infinite ${animationDirection}`;
+      // Optimize for animation
+      style.willChange = 'background-position, transform';
     }
 
     return style;
@@ -115,6 +175,9 @@ export function usePatternGenerator() {
 
     css += `\n  opacity: ${opacity / 100};`;
     css += `\n  transition: all 0.3s ease-in-out;`;
+    css += `\n  background-attachment: fixed;`;
+    css += `\n  background-repeat: repeat;`;
+    css += `\n  background-position: center;`;
 
     if (isAnimated) {
       const duration = 21 - animationSpeed;
@@ -153,6 +216,7 @@ export function usePatternGenerator() {
     setIsAnimated,
     setAnimationSpeed,
     setAnimationDirection,
+    generateRandom,
     reset,
   };
 }

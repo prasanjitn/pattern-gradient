@@ -7,7 +7,7 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Slider } from '@/components/ui/slider';
 import { Switch } from '@/components/ui/switch';
-import { ChevronDown, ChevronUp, Palette, Settings, Sparkles, Zap, Navigation, Layers, RotateCw, RotateCcw } from 'lucide-react';
+import { ChevronDown, ChevronUp, Palette, Sparkles, Zap, Navigation, RotateCw, RotateCcw, Copy, Check, Shuffle } from 'lucide-react';
 
 interface Pattern {
   id: string;
@@ -42,6 +42,7 @@ interface HybridControlsPanelProps {
   isAnimated: boolean;
   animationSpeed: number;
   animationDirection: string;
+  cssCode: string;
   onPatternChange: (patternId: string) => void;
   onGradientChange: (gradientId: string) => void;
   onPatternColorChange: (color: string) => void;
@@ -57,6 +58,7 @@ interface HybridControlsPanelProps {
   onAnimationSpeedChange: (speed: number) => void;
   onAnimationDirectionChange: (direction: string) => void;
   onReset: () => void;
+  onGenerateRandom: () => void;
 }
 
 export default function HybridControlsPanel({
@@ -76,6 +78,7 @@ export default function HybridControlsPanel({
   isAnimated,
   animationSpeed,
   animationDirection,
+  cssCode,
   onPatternChange,
   onGradientChange,
   onPatternColorChange,
@@ -91,275 +94,301 @@ export default function HybridControlsPanel({
   onAnimationSpeedChange,
   onAnimationDirectionChange,
   onReset,
+  onGenerateRandom,
 }: HybridControlsPanelProps) {
   const [isCollapsed, setIsCollapsed] = useState(false);
+  const [copied, setCopied] = useState(false);
 
   const currentGradient = gradients.find(g => g.id === selectedGradient);
   const showAngleControl = currentGradient?.type === 'linear-gradient';
 
+  const copyToClipboard = async () => {
+    try {
+      await navigator.clipboard.writeText(cssCode);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch (err) {
+      console.error('Failed to copy: ', err);
+    }
+  };
+
   return (
-    <Card className="w-full max-w-6xl mx-auto bg-white/10 backdrop-blur-lg border border-white/20 shadow-2xl z-20">
-      <CardHeader className="pb-3 bg-white/10 backdrop-blur-lg z-10 border-b border-white/10">
+    <Card className="w-full max-w-5xl mx-auto bg-white/10 backdrop-blur-lg border border-white/20 shadow-2xl z-20 rounded-2xl">
+      <CardHeader className="pb-3 bg-white/10 backdrop-blur-lg z-10 border-b border-white/10 rounded-t-2xl">
         <div className="flex items-center justify-between">
-          <CardTitle className="flex items-center gap-2 text-2xl text-white">
-            <Layers className="h-6 w-6 text-cyan-400" />
-            CSS Pattern Designer
+          <CardTitle className="text-xl text-black font-semibold">
+            Hybrid Controls
           </CardTitle>
           <div className="flex items-center gap-2">
+            <Button
+              onClick={copyToClipboard}
+              variant="ghost"
+              size="sm"
+              className="h-8 px-3 hover:bg-white/20 text-black"
+              title="Copy CSS"
+            >
+              {copied ? (
+                <>
+                  <Check className="h-4 w-4 mr-1 text-green-600" />
+                  Copied!
+                </>
+              ) : (
+                <>
+                  <Copy className="h-4 w-4 mr-1 text-black" />
+                  Copy CSS
+                </>
+              )}
+            </Button>
+            <Button
+              onClick={onGenerateRandom}
+              variant="ghost"
+              size="sm"
+              className="h-8 px-3 hover:bg-white/20 text-black"
+              title="Generate random hybrid"
+            >
+              <Shuffle className="h-4 w-4 mr-1 text-black" />
+              Random
+            </Button>
             <Button
               onClick={onReset}
               variant="ghost"
               size="sm"
-              className="h-8 px-2 hover:bg-white/20 text-white"
+              className="h-8 px-2 hover:bg-white/20 text-black"
               title="Reset to defaults"
             >
-              <RotateCcw className="h-4 w-4" />
+              <RotateCcw className="h-4 w-4 text-black" />
             </Button>
             <Button
               variant="ghost"
               size="sm"
               onClick={() => setIsCollapsed(!isCollapsed)}
-              className="h-8 w-8 p-0 hover:bg-white/20 text-white"
+              className="h-8 w-8 p-0 hover:bg-white/20 text-black"
             >
-              {isCollapsed ? <ChevronDown className="h-4 w-4" /> : <ChevronUp className="h-4 w-4" />}
+              {isCollapsed ? <ChevronDown className="h-4 w-4 text-black" /> : <ChevronUp className="h-4 w-4 text-black" />}
             </Button>
           </div>
         </div>
       </CardHeader>
       
       {!isCollapsed && (
-        <CardContent className="space-y-6 p-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {/* Gradient Selection - Background Layer */}
-            <div className="space-y-4 p-4 bg-white/5 backdrop-blur-sm rounded-lg border border-white/10">
-              <Label className="text-sm font-semibold flex items-center gap-2 text-white">
-                <Palette className="h-4 w-4 text-pink-400" />
-                Background Gradient
-              </Label>
-              
-              <div className="space-y-3">
-                <div className="space-y-2">
-                  <Label className="text-xs text-gray-300">Gradient Type</Label>
-                  <Select value={selectedGradient} onValueChange={onGradientChange}>
-                    <SelectTrigger className="bg-white/10 backdrop-blur-sm border-white/20 text-white">
-                      <SelectValue placeholder="Select a gradient" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {gradients.map((gradient) => (
-                        <SelectItem key={gradient.id} value={gradient.id}>
-                          <div>
-                            <div className="font-medium">{gradient.name}</div>
-                            <div className="text-xs text-gray-500">{gradient.description}</div>
-                          </div>
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                {/* Gradient Colors */}
-                <div className="space-y-3">
-                  <Label className="text-xs text-gray-300">Gradient Colors</Label>
-                  
-                  <div className="grid grid-cols-2 gap-2">
-                    <div className="space-y-1">
-                      <Label className="text-xs text-gray-400">Color 1</Label>
-                      <div className="flex items-center gap-1">
-                        <input
-                          type="color"
-                          value={gradientColor1}
-                          onChange={(e) => onGradientColor1Change(e.target.value)}
-                          className="w-8 h-6 rounded border border-white/20 cursor-pointer flex-shrink-0"
-                        />
-                        <input
-                          type="text"
-                          value={gradientColor1}
-                          onChange={(e) => onGradientColor1Change(e.target.value)}
-                          className="flex-1 px-1 py-1 text-xs border border-white/20 rounded bg-white/10 backdrop-blur-sm text-white min-w-0"
-                        />
-                      </div>
+        <CardContent className="grid grid-cols-1 md:grid-cols-3 gap-6 p-4 min-h-[320px]">
+          {/* Pattern Controls */}
+          <div className="space-y-4 flex flex-col">
+            <Label className="text-sm font-semibold flex items-center gap-2 text-black">
+              <Sparkles className="h-4 w-4 text-black" />
+              Pattern Type
+            </Label>
+            <Select value={selectedPattern} onValueChange={onPatternChange}>
+              <SelectTrigger className="bg-white/10 backdrop-blur-sm border-white/20 text-black">
+                <SelectValue placeholder="Select a pattern" />
+              </SelectTrigger>
+              <SelectContent>
+                {patterns.map((pattern) => (
+                  <SelectItem key={pattern.id} value={pattern.id}>
+                    <div>
+                      <div className="font-medium">{pattern.name}</div>
+                      <div className="text-xs text-gray-500">{pattern.description}</div>
                     </div>
-                    
-                    <div className="space-y-1">
-                      <Label className="text-xs text-gray-400">Color 2</Label>
-                      <div className="flex items-center gap-1">
-                        <input
-                          type="color"
-                          value={gradientColor2}
-                          onChange={(e) => onGradientColor2Change(e.target.value)}
-                          className="w-8 h-6 rounded border border-white/20 cursor-pointer flex-shrink-0"
-                        />
-                        <input
-                          type="text"
-                          value={gradientColor2}
-                          onChange={(e) => onGradientColor2Change(e.target.value)}
-                          className="flex-1 px-1 py-1 text-xs border border-white/20 rounded bg-white/10 backdrop-blur-sm text-white min-w-0"
-                        />
-                      </div>
-                    </div>
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
 
-                    <div className="space-y-1">
-                      <Label className="text-xs text-gray-400">Color 3</Label>
-                      <div className="flex items-center gap-1">
-                        <input
-                          type="color"
-                          value={gradientColor3}
-                          onChange={(e) => onGradientColor3Change(e.target.value)}
-                          className="w-8 h-6 rounded border border-white/20 cursor-pointer flex-shrink-0"
-                        />
-                        <input
-                          type="text"
-                          value={gradientColor3}
-                          onChange={(e) => onGradientColor3Change(e.target.value)}
-                          className="flex-1 px-1 py-1 text-xs border border-white/20 rounded bg-white/10 backdrop-blur-sm text-white min-w-0"
-                        />
-                      </div>
-                    </div>
-
-                    <div className="space-y-1">
-                      <Label className="text-xs text-gray-400">Color 4</Label>
-                      <div className="flex items-center gap-1">
-                        <input
-                          type="color"
-                          value={gradientColor4}
-                          onChange={(e) => onGradientColor4Change(e.target.value)}
-                          className="w-8 h-6 rounded border border-white/20 cursor-pointer flex-shrink-0"
-                        />
-                        <input
-                          type="text"
-                          value={gradientColor4}
-                          onChange={(e) => onGradientColor4Change(e.target.value)}
-                          className="flex-1 px-1 py-1 text-xs border border-white/20 rounded bg-white/10 backdrop-blur-sm text-white min-w-0"
-                        />
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Gradient Angle Control (for linear gradients) */}
-                {showAngleControl && (
-                  <div className="space-y-2">
-                    <div className="flex items-center justify-between">
-                      <Label className="text-xs text-gray-300 flex items-center gap-1">
-                        <RotateCw className="h-3 w-3" />
-                        Angle
-                      </Label>
-                      <span className="text-xs text-gray-300">{gradientAngle}°</span>
-                    </div>
-                    <Slider
-                      value={[gradientAngle]}
-                      onValueChange={(value) => onGradientAngleChange(value[0])}
-                      min={0}
-                      max={360}
-                      step={15}
-                      className="w-full"
-                    />
-                  </div>
-                )}
-
-                {/* Gradient Opacity */}
-                <div className="space-y-2">
-                  <div className="flex items-center justify-between">
-                    <Label className="text-xs text-gray-300">Gradient Opacity</Label>
-                    <span className="text-xs text-gray-300">{gradientOpacity}%</span>
-                  </div>
-                  <Slider
-                    value={[gradientOpacity]}
-                    onValueChange={(value) => onGradientOpacityChange(value[0])}
-                    max={100}
-                    step={1}
-                    className="w-full"
-                  />
-                </div>
+            {/* Pattern Color */}
+            <div className="space-y-2">
+              <Label className="text-xs text-gray-700">Pattern Color</Label>
+              <div className="flex items-center gap-2">
+                <input
+                  type="color"
+                  value={patternColor}
+                  onChange={(e) => onPatternColorChange(e.target.value)}
+                  className="w-10 h-8 rounded-md border-2 border-white/20 cursor-pointer flex-shrink-0"
+                />
+                <input
+                  type="text"
+                  value={patternColor}
+                  onChange={(e) => onPatternColorChange(e.target.value)}
+                  className="flex-1 px-2 py-1 text-xs border border-white/20 rounded-md bg-white/10 backdrop-blur-sm text-black min-w-0"
+                />
               </div>
             </div>
 
-            {/* Pattern Selection - Foreground Layer */}
-            <div className="space-y-4 p-4 bg-white/5 backdrop-blur-sm rounded-lg border border-white/10">
-              <Label className="text-sm font-semibold flex items-center gap-2 text-white">
-                <Sparkles className="h-4 w-4 text-purple-400" />
-                Foreground Pattern
-              </Label>
-              
-              <div className="space-y-3">
-                <div className="space-y-2">
-                  <Label className="text-xs text-gray-300">Pattern Type</Label>
-                  <Select value={selectedPattern} onValueChange={onPatternChange}>
-                    <SelectTrigger className="bg-white/10 backdrop-blur-sm border-white/20 text-white">
-                      <SelectValue placeholder="Select a pattern" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {patterns.map((pattern) => (
-                        <SelectItem key={pattern.id} value={pattern.id}>
-                          <div>
-                            <div className="font-medium">{pattern.name}</div>
-                            <div className="text-xs text-gray-500">{pattern.description}</div>
-                          </div>
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
+            {/* Pattern Spacing */}
+            <div className="space-y-3">
+              <div className="flex items-center justify-between">
+                <Label className="text-sm font-semibold text-black">Spacing</Label>
+                <span className="text-sm text-gray-700">{spacing}px</span>
+              </div>
+              <Slider
+                value={[spacing]}
+                onValueChange={(value) => onSpacingChange(value[0])}
+                min={5}
+                max={100}
+                step={5}
+                className="w-full"
+              />
+            </div>
 
-                {/* Pattern Color */}
-                <div className="space-y-2">
-                  <Label className="text-xs text-gray-300">Pattern Color</Label>
-                  <div className="flex items-center gap-2">
-                    <input
-                      type="color"
-                      value={patternColor}
-                      onChange={(e) => onPatternColorChange(e.target.value)}
-                      className="w-10 h-8 rounded-md border-2 border-white/20 cursor-pointer flex-shrink-0"
-                    />
-                    <input
-                      type="text"
-                      value={patternColor}
-                      onChange={(e) => onPatternColorChange(e.target.value)}
-                      className="flex-1 px-2 py-1 text-xs border border-white/20 rounded-md bg-white/10 backdrop-blur-sm text-white min-w-0"
-                    />
-                  </div>
+            {/* Pattern and Gradient Opacity - Side by Side */}
+            <div className="grid grid-cols-2 gap-3">
+              <div className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <Label className="text-xs font-semibold text-black">Pattern</Label>
+                  <span className="text-xs text-gray-700">{patternOpacity}%</span>
                 </div>
-
-                {/* Pattern Opacity */}
-                <div className="space-y-2">
-                  <div className="flex items-center justify-between">
-                    <Label className="text-xs text-gray-300">Pattern Opacity</Label>
-                    <span className="text-xs text-gray-300">{patternOpacity}%</span>
-                  </div>
-                  <Slider
-                    value={[patternOpacity]}
-                    onValueChange={(value) => onPatternOpacityChange(value[0])}
-                    max={100}
-                    step={1}
-                    className="w-full"
-                  />
+                <Slider
+                  value={[patternOpacity]}
+                  onValueChange={(value) => onPatternOpacityChange(value[0])}
+                  max={100}
+                  step={1}
+                  className="w-full"
+                />
+              </div>
+              <div className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <Label className="text-xs font-semibold text-black">Gradient</Label>
+                  <span className="text-xs text-gray-700">{gradientOpacity}%</span>
                 </div>
-
-                {/* Pattern Spacing */}
-                <div className="space-y-2">
-                  <div className="flex items-center justify-between">
-                    <Label className="text-xs text-gray-300">Pattern Spacing</Label>
-                    <span className="text-xs text-gray-300">{spacing}px</span>
-                  </div>
-                  <Slider
-                    value={[spacing]}
-                    onValueChange={(value) => onSpacingChange(value[0])}
-                    min={5}
-                    max={100}
-                    step={5}
-                    className="w-full"
-                  />
-                </div>
+                <Slider
+                  value={[gradientOpacity]}
+                  onValueChange={(value) => onGradientOpacityChange(value[0])}
+                  max={100}
+                  step={1}
+                  className="w-full"
+                />
               </div>
             </div>
           </div>
 
-          {/* Animation Controls */}
-          <div className="space-y-4 p-4 bg-white/5 backdrop-blur-sm rounded-lg border border-white/10">
+          {/* Gradient Controls */}
+          <div className="space-y-4 flex flex-col">
+            <Label className="text-sm font-semibold flex items-center gap-2 text-black">
+              <Palette className="h-4 w-4 text-black" />
+              Gradient Type
+            </Label>
+            <Select value={selectedGradient} onValueChange={onGradientChange}>
+              <SelectTrigger className="bg-white/10 backdrop-blur-sm border-white/20 text-black">
+                <SelectValue placeholder="Select a gradient" />
+              </SelectTrigger>
+              <SelectContent>
+                {gradients.map((gradient) => (
+                  <SelectItem key={gradient.id} value={gradient.id}>
+                    <div>
+                      <div className="font-medium">{gradient.name}</div>
+                      <div className="text-xs text-gray-500">{gradient.description}</div>
+                    </div>
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+
+            {/* Gradient Colors */}
+            <div className="space-y-3 flex-1">
+              <div className="grid grid-cols-2 gap-2">
+                <div className="space-y-1">
+                  <div className="flex items-center gap-1">
+                    <input
+                      type="color"
+                      value={gradientColor1}
+                      onChange={(e) => onGradientColor1Change(e.target.value)}
+                      className="w-8 h-6 rounded border border-white/20 cursor-pointer flex-shrink-0"
+                    />
+                    <input
+                      type="text"
+                      value={gradientColor1}
+                      onChange={(e) => onGradientColor1Change(e.target.value)}
+                      className="flex-1 px-1 py-1 text-xs border border-white/20 rounded bg-white/10 backdrop-blur-sm text-black min-w-0"
+                    />
+                  </div>
+                </div>
+                
+                <div className="space-y-1">
+                  <div className="flex items-center gap-1">
+                    <input
+                      type="color"
+                      value={gradientColor2}
+                      onChange={(e) => onGradientColor2Change(e.target.value)}
+                      className="w-8 h-6 rounded border border-white/20 cursor-pointer flex-shrink-0"
+                    />
+                    <input
+                      type="text"
+                      value={gradientColor2}
+                      onChange={(e) => onGradientColor2Change(e.target.value)}
+                      className="flex-1 px-1 py-1 text-xs border border-white/20 rounded bg-white/10 backdrop-blur-sm text-black min-w-0"
+                    />
+                  </div>
+                </div>
+
+                <div className="space-y-1">
+                  <div className="flex items-center gap-1">
+                    <input
+                      type="color"
+                      value={gradientColor3}
+                      onChange={(e) => onGradientColor3Change(e.target.value)}
+                      className="w-8 h-6 rounded border border-white/20 cursor-pointer flex-shrink-0"
+                    />
+                    <input
+                      type="text"
+                      value={gradientColor3}
+                      onChange={(e) => onGradientColor3Change(e.target.value)}
+                      className="flex-1 px-1 py-1 text-xs border border-white/20 rounded bg-white/10 backdrop-blur-sm text-black min-w-0"
+                    />
+                  </div>
+                </div>
+
+                <div className="space-y-1">
+                  <div className="flex items-center gap-1">
+                    <input
+                      type="color"
+                      value={gradientColor4}
+                      onChange={(e) => onGradientColor4Change(e.target.value)}
+                      className="w-8 h-6 rounded border border-white/20 cursor-pointer flex-shrink-0"
+                    />
+                    <input
+                      type="text"
+                      value={gradientColor4}
+                      onChange={(e) => onGradientColor4Change(e.target.value)}
+                      className="flex-1 px-1 py-1 text-xs border border-white/20 rounded bg-white/10 backdrop-blur-sm text-black min-w-0"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Gradient Angle Control (for linear gradients) - Fixed Height Container */}
+            <div className="space-y-3 min-h-[60px]">
+              {showAngleControl ? (
+                <>
+                  <div className="flex items-center justify-between">
+                    <Label className="text-sm font-semibold flex items-center gap-2 text-black">
+                      <RotateCw className="h-4 w-4 text-black" />
+                      Angle
+                    </Label>
+                    <span className="text-sm text-gray-700">{gradientAngle}°</span>
+                  </div>
+                  <Slider
+                    value={[gradientAngle]}
+                    onValueChange={(value) => onGradientAngleChange(value[0])}
+                    min={0}
+                    max={360}
+                    step={15}
+                    className="w-full"
+                  />
+                </>
+              ) : (
+                <div className="opacity-50">
+                  <p className="text-sm text-gray-600">Angle control available for linear gradients</p>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Animation Controls - Fixed Height */}
+          <div className="space-y-4 flex flex-col">
             <div className="flex items-center justify-between">
               <div>
-                <Label className="text-sm font-semibold text-white">Animated Hybrid</Label>
-                <p className="text-xs text-gray-300">Add flowing animation</p>
+                <Label className="text-sm font-semibold text-black">Animated Hybrid</Label>
+                <p className="text-xs text-gray-700">Add flowing animation</p>
               </div>
               <Switch
                 checked={isAnimated}
@@ -367,47 +396,54 @@ export default function HybridControlsPanel({
               />
             </div>
 
-            {isAnimated && (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2 border-t border-white/10">
-                {/* Animation Speed */}
-                <div className="space-y-3">
-                  <div className="flex items-center justify-between">
-                    <Label className="text-sm font-semibold flex items-center gap-2 text-white">
-                      <Zap className="h-4 w-4 text-yellow-400" />
-                      Speed
-                    </Label>
-                    <span className="text-sm text-gray-300">{animationSpeed}/20</span>
+            {/* Animation Controls Container - Always takes same space */}
+            <div className="flex-1 min-h-[180px]">
+              {isAnimated ? (
+                <div className="space-y-4 pt-2 border-t border-white/10">
+                  {/* Animation Speed */}
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between">
+                      <Label className="text-sm font-semibold flex items-center gap-2 text-black">
+                        <Zap className="h-4 w-4 text-black" />
+                        Speed
+                      </Label>
+                      <span className="text-sm text-gray-700">{animationSpeed}/20</span>
+                    </div>
+                    <Slider
+                      value={[animationSpeed]}
+                      onValueChange={(value) => onAnimationSpeedChange(value[0])}
+                      min={1}
+                      max={20}
+                      step={1}
+                      className="w-full"
+                    />
                   </div>
-                  <Slider
-                    value={[animationSpeed]}
-                    onValueChange={(value) => onAnimationSpeedChange(value[0])}
-                    min={1}
-                    max={20}
-                    step={1}
-                    className="w-full"
-                  />
-                </div>
 
-                {/* Animation Direction */}
-                <div className="space-y-2">
-                  <Label className="text-sm font-semibold flex items-center gap-2 text-white">
-                    <Navigation className="h-4 w-4 text-orange-400" />
-                    Direction
-                  </Label>
-                  <Select value={animationDirection} onValueChange={onAnimationDirectionChange}>
-                    <SelectTrigger className="bg-white/10 backdrop-blur-sm border-white/20 text-white">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="normal">Normal</SelectItem>
-                      <SelectItem value="reverse">Reverse</SelectItem>
-                      <SelectItem value="alternate">Alternate</SelectItem>
-                      <SelectItem value="alternate-reverse">Alternate Reverse</SelectItem>
-                    </SelectContent>
-                  </Select>
+                  {/* Animation Direction */}
+                  <div className="space-y-2">
+                    <Label className="text-sm font-semibold flex items-center gap-2 text-black">
+                      <Navigation className="h-4 w-4 text-black" />
+                      Direction
+                    </Label>
+                    <Select value={animationDirection} onValueChange={onAnimationDirectionChange}>
+                      <SelectTrigger className="bg-white/10 backdrop-blur-sm border-white/20 text-black">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="normal">Normal</SelectItem>
+                        <SelectItem value="reverse">Reverse</SelectItem>
+                        <SelectItem value="alternate">Alternate</SelectItem>
+                        <SelectItem value="alternate-reverse">Alternate Reverse</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
                 </div>
-              </div>
-            )}
+              ) : (
+                <div className="pt-2 border-t border-white/10 opacity-50">
+                  <p className="text-sm text-gray-600">Enable animation to access speed and direction controls</p>
+                </div>
+              )}
+            </div>
           </div>
         </CardContent>
       )}

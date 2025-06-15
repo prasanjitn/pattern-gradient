@@ -7,7 +7,7 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Slider } from '@/components/ui/slider';
 import { Switch } from '@/components/ui/switch';
-import { ChevronDown, ChevronUp, Palette, Settings, Sparkles, Zap, Navigation, RotateCcw } from 'lucide-react';
+import { ChevronDown, ChevronUp, Palette, Sparkles, Zap, Navigation, RotateCcw, Copy, Check, Shuffle } from 'lucide-react';
 
 interface Pattern {
   id: string;
@@ -27,6 +27,7 @@ interface ControlsPanelProps {
   isAnimated: boolean;
   animationSpeed: number;
   animationDirection: string;
+  cssCode: string;
   onPatternChange: (patternId: string) => void;
   onForegroundColorChange: (color: string) => void;
   onBackgroundColorChange: (color: string) => void;
@@ -36,6 +37,7 @@ interface ControlsPanelProps {
   onAnimationSpeedChange: (speed: number) => void;
   onAnimationDirectionChange: (direction: string) => void;
   onReset: () => void;
+  onGenerateRandom: () => void;
 }
 
 export default function ControlsPanel({
@@ -48,6 +50,7 @@ export default function ControlsPanel({
   isAnimated,
   animationSpeed,
   animationDirection,
+  cssCode,
   onPatternChange,
   onForegroundColorChange,
   onBackgroundColorChange,
@@ -57,49 +60,89 @@ export default function ControlsPanel({
   onAnimationSpeedChange,
   onAnimationDirectionChange,
   onReset,
+  onGenerateRandom,
 }: ControlsPanelProps) {
   const [isCollapsed, setIsCollapsed] = useState(false);
+  const [copied, setCopied] = useState(false);
+
+  const copyToClipboard = async () => {
+    try {
+      await navigator.clipboard.writeText(cssCode);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch (err) {
+      console.error('Failed to copy: ', err);
+    }
+  };
 
   return (
-    <Card className="w-full max-w-6xl mx-auto bg-white/10 backdrop-blur-lg border border-white/20 shadow-2xl z-20">
-      <CardHeader className="pb-3 bg-white/10 backdrop-blur-lg z-10 border-b border-white/10">
+    <Card className="w-full max-w-5xl mx-auto bg-white/10 backdrop-blur-lg border border-white/20 shadow-2xl z-20 rounded-2xl">
+      <CardHeader className="pb-3 bg-white/10 backdrop-blur-lg z-10 border-b border-white/10 rounded-t-2xl">
         <div className="flex items-center justify-between">
-          <CardTitle className="flex items-center gap-2 text-2xl text-white">
-            <Settings className="h-6 w-6 text-blue-400" />
-            CSS Pattern Designer
+          <CardTitle className="text-xl text-black font-semibold">
+            Pattern Controls
           </CardTitle>
           <div className="flex items-center gap-2">
+            <Button
+              onClick={copyToClipboard}
+              variant="ghost"
+              size="sm"
+              className="h-8 px-3 hover:bg-white/20 text-black"
+              title="Copy CSS"
+            >
+              {copied ? (
+                <>
+                  <Check className="h-4 w-4 mr-1 text-green-600" />
+                  Copied!
+                </>
+              ) : (
+                <>
+                  <Copy className="h-4 w-4 mr-1 text-black" />
+                  Copy CSS
+                </>
+              )}
+            </Button>
+            <Button
+              onClick={onGenerateRandom}
+              variant="ghost"
+              size="sm"
+              className="h-8 px-3 hover:bg-white/20 text-black"
+              title="Generate random pattern"
+            >
+              <Shuffle className="h-4 w-4 mr-1 text-black" />
+              Random
+            </Button>
             <Button
               onClick={onReset}
               variant="ghost"
               size="sm"
-              className="h-8 px-2 hover:bg-white/20 text-white"
+              className="h-8 px-2 hover:bg-white/20 text-black"
               title="Reset to defaults"
             >
-              <RotateCcw className="h-4 w-4" />
+              <RotateCcw className="h-4 w-4 text-black" />
             </Button>
             <Button
               variant="ghost"
               size="sm"
               onClick={() => setIsCollapsed(!isCollapsed)}
-              className="h-8 w-8 p-0 hover:bg-white/20 text-white"
+              className="h-8 w-8 p-0 hover:bg-white/20 text-black"
             >
-              {isCollapsed ? <ChevronDown className="h-4 w-4" /> : <ChevronUp className="h-4 w-4" />}
+              {isCollapsed ? <ChevronDown className="h-4 w-4 text-black" /> : <ChevronUp className="h-4 w-4 text-black" />}
             </Button>
           </div>
         </div>
       </CardHeader>
       
       {!isCollapsed && (
-        <CardContent className="grid grid-cols-1 md:grid-cols-3 gap-6 p-6">
+        <CardContent className="grid grid-cols-1 md:grid-cols-3 gap-6 p-4 min-h-[320px]">
           {/* Pattern Selection */}
-          <div className="space-y-4">
-            <Label className="text-sm font-semibold flex items-center gap-2 text-white">
-              <Sparkles className="h-4 w-4 text-purple-400" />
+          <div className="space-y-4 flex flex-col">
+            <Label className="text-sm font-semibold flex items-center gap-2 text-black">
+              <Sparkles className="h-4 w-4 text-black" />
               Pattern Type
             </Label>
             <Select value={selectedPattern} onValueChange={onPatternChange}>
-              <SelectTrigger className="bg-white/10 backdrop-blur-sm border-white/20 text-white">
+              <SelectTrigger className="bg-white/10 backdrop-blur-sm border-white/20 text-black">
                 <SelectValue placeholder="Select a pattern" />
               </SelectTrigger>
               <SelectContent>
@@ -117,8 +160,8 @@ export default function ControlsPanel({
             {/* Spacing Control */}
             <div className="space-y-3">
               <div className="flex items-center justify-between">
-                <Label className="text-sm font-semibold text-white">Spacing</Label>
-                <span className="text-sm text-gray-300">{spacing}px</span>
+                <Label className="text-sm font-semibold text-black">Spacing</Label>
+                <span className="text-sm text-gray-700">{spacing}px</span>
               </div>
               <Slider
                 value={[spacing]}
@@ -129,58 +172,12 @@ export default function ControlsPanel({
                 className="w-full"
               />
             </div>
-          </div>
-
-          {/* Color Controls */}
-          <div className="space-y-4">
-            <Label className="text-sm font-semibold flex items-center gap-2 text-white">
-              <Palette className="h-4 w-4 text-green-400" />
-              Colors
-            </Label>
-            
-            <div className="space-y-3">
-              <div className="space-y-2">
-                <Label className="text-xs text-gray-300">Foreground</Label>
-                <div className="flex items-center gap-2">
-                  <input
-                    type="color"
-                    value={foregroundColor}
-                    onChange={(e) => onForegroundColorChange(e.target.value)}
-                    className="w-10 h-8 rounded-md border-2 border-white/20 cursor-pointer flex-shrink-0"
-                  />
-                  <input
-                    type="text"
-                    value={foregroundColor}
-                    onChange={(e) => onForegroundColorChange(e.target.value)}
-                    className="flex-1 px-2 py-1 text-xs border border-white/20 rounded-md bg-white/10 backdrop-blur-sm text-white min-w-0"
-                  />
-                </div>
-              </div>
-              
-              <div className="space-y-2">
-                <Label className="text-xs text-gray-300">Background</Label>
-                <div className="flex items-center gap-2">
-                  <input
-                    type="color"
-                    value={backgroundColor}
-                    onChange={(e) => onBackgroundColorChange(e.target.value)}
-                    className="w-10 h-8 rounded-md border-2 border-white/20 cursor-pointer flex-shrink-0"
-                  />
-                  <input
-                    type="text"
-                    value={backgroundColor}
-                    onChange={(e) => onBackgroundColorChange(e.target.value)}
-                    className="flex-1 px-2 py-1 text-xs border border-white/20 rounded-md bg-white/10 backdrop-blur-sm text-white min-w-0"
-                  />
-                </div>
-              </div>
-            </div>
 
             {/* Opacity Control */}
             <div className="space-y-3">
               <div className="flex items-center justify-between">
-                <Label className="text-sm font-semibold text-white">Opacity</Label>
-                <span className="text-sm text-gray-300">{opacity}%</span>
+                <Label className="text-sm font-semibold text-black">Opacity</Label>
+                <span className="text-sm text-gray-700">{opacity}%</span>
               </div>
               <Slider
                 value={[opacity]}
@@ -192,12 +189,58 @@ export default function ControlsPanel({
             </div>
           </div>
 
-          {/* Animation Controls */}
-          <div className="space-y-4">
+          {/* Color Controls */}
+          <div className="space-y-4 flex flex-col">
+            <Label className="text-sm font-semibold flex items-center gap-2 text-black">
+              <Palette className="h-4 w-4 text-black" />
+              Colors
+            </Label>
+            
+            <div className="space-y-3 flex-1">
+              <div className="space-y-2">
+                <Label className="text-xs text-gray-700">Foreground</Label>
+                <div className="flex items-center gap-2">
+                  <input
+                    type="color"
+                    value={foregroundColor}
+                    onChange={(e) => onForegroundColorChange(e.target.value)}
+                    className="w-10 h-8 rounded-md border-2 border-white/20 cursor-pointer flex-shrink-0"
+                  />
+                  <input
+                    type="text"
+                    value={foregroundColor}
+                    onChange={(e) => onForegroundColorChange(e.target.value)}
+                    className="flex-1 px-2 py-1 text-xs border border-white/20 rounded-md bg-white/10 backdrop-blur-sm text-black min-w-0"
+                  />
+                </div>
+              </div>
+              
+              <div className="space-y-2">
+                <Label className="text-xs text-gray-700">Background</Label>
+                <div className="flex items-center gap-2">
+                  <input
+                    type="color"
+                    value={backgroundColor}
+                    onChange={(e) => onBackgroundColorChange(e.target.value)}
+                    className="w-10 h-8 rounded-md border-2 border-white/20 cursor-pointer flex-shrink-0"
+                  />
+                  <input
+                    type="text"
+                    value={backgroundColor}
+                    onChange={(e) => onBackgroundColorChange(e.target.value)}
+                    className="flex-1 px-2 py-1 text-xs border border-white/20 rounded-md bg-white/10 backdrop-blur-sm text-black min-w-0"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Animation Controls - Fixed Height */}
+          <div className="space-y-4 flex flex-col">
             <div className="flex items-center justify-between">
               <div>
-                <Label className="text-sm font-semibold text-white">Animated Pattern</Label>
-                <p className="text-xs text-gray-300">Add flowing animation</p>
+                <Label className="text-sm font-semibold text-black">Animated Pattern</Label>
+                <p className="text-xs text-gray-700">Add flowing animation</p>
               </div>
               <Switch
                 checked={isAnimated}
@@ -205,47 +248,54 @@ export default function ControlsPanel({
               />
             </div>
 
-            {isAnimated && (
-              <div className="space-y-4 pt-2 border-t border-white/10">
-                {/* Animation Speed */}
-                <div className="space-y-3">
-                  <div className="flex items-center justify-between">
-                    <Label className="text-sm font-semibold flex items-center gap-2 text-white">
-                      <Zap className="h-4 w-4 text-yellow-400" />
-                      Speed
-                    </Label>
-                    <span className="text-sm text-gray-300">{animationSpeed}/20</span>
+            {/* Animation Controls Container - Always takes same space */}
+            <div className="flex-1 min-h-[180px]">
+              {isAnimated ? (
+                <div className="space-y-4 pt-2 border-t border-white/10">
+                  {/* Animation Speed */}
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between">
+                      <Label className="text-sm font-semibold flex items-center gap-2 text-black">
+                        <Zap className="h-4 w-4 text-black" />
+                        Speed
+                      </Label>
+                      <span className="text-sm text-gray-700">{animationSpeed}/20</span>
+                    </div>
+                    <Slider
+                      value={[animationSpeed]}
+                      onValueChange={(value) => onAnimationSpeedChange(value[0])}
+                      min={1}
+                      max={20}
+                      step={1}
+                      className="w-full"
+                    />
                   </div>
-                  <Slider
-                    value={[animationSpeed]}
-                    onValueChange={(value) => onAnimationSpeedChange(value[0])}
-                    min={1}
-                    max={20}
-                    step={1}
-                    className="w-full"
-                  />
-                </div>
 
-                {/* Animation Direction */}
-                <div className="space-y-2">
-                  <Label className="text-sm font-semibold flex items-center gap-2 text-white">
-                    <Navigation className="h-4 w-4 text-orange-400" />
-                    Direction
-                  </Label>
-                  <Select value={animationDirection} onValueChange={onAnimationDirectionChange}>
-                    <SelectTrigger className="bg-white/10 backdrop-blur-sm border-white/20 text-white">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="normal">Normal</SelectItem>
-                      <SelectItem value="reverse">Reverse</SelectItem>
-                      <SelectItem value="alternate">Alternate</SelectItem>
-                      <SelectItem value="alternate-reverse">Alternate Reverse</SelectItem>
-                    </SelectContent>
-                  </Select>
+                  {/* Animation Direction */}
+                  <div className="space-y-2">
+                    <Label className="text-sm font-semibold flex items-center gap-2 text-black">
+                      <Navigation className="h-4 w-4 text-black" />
+                      Direction
+                    </Label>
+                    <Select value={animationDirection} onValueChange={onAnimationDirectionChange}>
+                      <SelectTrigger className="bg-white/10 backdrop-blur-sm border-white/20 text-black">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="normal">Normal</SelectItem>
+                        <SelectItem value="reverse">Reverse</SelectItem>
+                        <SelectItem value="alternate">Alternate</SelectItem>
+                        <SelectItem value="alternate-reverse">Alternate Reverse</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
                 </div>
-              </div>
-            )}
+              ) : (
+                <div className="pt-2 border-t border-white/10 opacity-50">
+                  <p className="text-sm text-gray-600">Enable animation to access speed and direction controls</p>
+                </div>
+              )}
+            </div>
           </div>
         </CardContent>
       )}

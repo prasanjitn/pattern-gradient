@@ -22,16 +22,16 @@ export function useHybridGenerator() {
   const [patterns, setPatterns] = useState<Pattern[]>([]);
   const [gradients, setGradients] = useState<Gradient[]>([]);
   const [selectedPattern, setSelectedPattern] = useState('stripes');
-  const [selectedGradient, setSelectedGradient] = useState('linear-diagonal');
-  const [patternColor, setPatternColor] = useState('#3b82f6');
-  const [gradientColor1, setGradientColor1] = useState('#ff6b6b');
-  const [gradientColor2, setGradientColor2] = useState('#4ecdc4');
-  const [gradientColor3, setGradientColor3] = useState('#45b7d1');
-  const [gradientColor4, setGradientColor4] = useState('#96ceb4');
-  const [patternOpacity, setPatternOpacity] = useState(60);
-  const [gradientOpacity, setGradientOpacity] = useState(100);
-  const [spacing, setSpacing] = useState(20);
-  const [gradientAngle, setGradientAngle] = useState(45);
+  const [selectedGradient, setSelectedGradient] = useState('linear-vertical');
+  const [patternColor, setPatternColor] = useState('#feca57');
+  const [gradientColor1, setGradientColor1] = useState('#a55eea');
+  const [gradientColor2, setGradientColor2] = useState('#0abde3');
+  const [gradientColor3, setGradientColor3] = useState('#54a0ff');
+  const [gradientColor4, setGradientColor4] = useState('#feca57');
+  const [patternOpacity, setPatternOpacity] = useState(63);
+  const [gradientOpacity, setGradientOpacity] = useState(54);
+  const [spacing, setSpacing] = useState(5);
+  const [gradientAngle, setGradientAngle] = useState(0);
   const [isAnimated, setIsAnimated] = useState(false);
   const [animationSpeed, setAnimationSpeed] = useState(5);
   const [animationDirection, setAnimationDirection] = useState('normal');
@@ -39,8 +39,18 @@ export function useHybridGenerator() {
   // Load patterns and gradients from JSON
   useEffect(() => {
     Promise.all([
-      fetch('/data/patterns.json').then(response => response.json()),
-      fetch('/data/gradients.json').then(response => response.json())
+      fetch('/data/patterns.json').then(response => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+      }),
+      fetch('/data/gradients.json').then(response => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+      })
     ])
       .then(([patternsData, gradientsData]) => {
         setPatterns(patternsData.patterns);
@@ -60,35 +70,85 @@ export function useHybridGenerator() {
         ]);
         setGradients([
           {
-            id: 'linear-diagonal',
-            name: 'Linear Diagonal',
+            id: 'linear-vertical',
+            name: 'Linear Vertical',
             type: 'linear-gradient',
-            description: 'Diagonal gradient',
-            basePattern: 'linear-gradient(45deg, {color1}, {color2})'
+            description: 'Vertical gradient',
+            basePattern: 'linear-gradient(0deg, {color1}, {color2}, {color3}, {color4})'
           }
         ]);
       });
   }, []);
 
+  // Generate random hybrid with improved randomization
+  const generateRandom = () => {
+    if (patterns.length === 0 || gradients.length === 0) return;
+    
+    const randomPattern = patterns[Math.floor(Math.random() * patterns.length)];
+    const randomGradient = gradients[Math.floor(Math.random() * gradients.length)];
+    
+    // More balanced color palette
+    const vibrantColors = [
+      '#ff6b6b', '#4ecdc4', '#45b7d1', '#96ceb4', '#feca57', '#ff9ff3', 
+      '#54a0ff', '#5f27cd', '#00d2d3', '#ff9f43', '#10ac84', '#ee5a24', 
+      '#0abde3', '#3867d6', '#8854d0', '#a55eea', '#26de81', '#fd79a8',
+      '#fdcb6e', '#6c5ce7', '#74b9ff', '#00b894', '#e17055', '#81ecec'
+    ];
+    
+    const pastelColors = [
+      '#ffeaa7', '#fab1a0', '#ff7675', '#fd79a8', '#fdcb6e', '#e17055',
+      '#74b9ff', '#0984e3', '#00b894', '#00cec9', '#6c5ce7', '#a29bfe',
+      '#ddd6fe', '#fecaca', '#fed7d7', '#d1fae5', '#dbeafe', '#e0e7ff'
+    ];
+    
+    // Mix vibrant and pastel colors for better balance
+    const allColors = [...vibrantColors, ...pastelColors];
+    
+    setSelectedPattern(randomPattern.id);
+    setSelectedGradient(randomGradient.id);
+    setPatternColor(allColors[Math.floor(Math.random() * allColors.length)]);
+    setGradientColor1(allColors[Math.floor(Math.random() * allColors.length)]);
+    setGradientColor2(allColors[Math.floor(Math.random() * allColors.length)]);
+    setGradientColor3(allColors[Math.floor(Math.random() * allColors.length)]);
+    setGradientColor4(allColors[Math.floor(Math.random() * allColors.length)]);
+    
+    // More balanced opacity ranges
+    setPatternOpacity(Math.floor(Math.random() * 30) + 40); // 40-70%
+    setGradientOpacity(Math.floor(Math.random() * 25) + 70); // 70-95%
+    
+    // Better spacing distribution
+    setSpacing(Math.floor(Math.random() * 40) + 15); // 15-55px
+    
+    setGradientAngle(Math.floor(Math.random() * 24) * 15); // 0-360 in 15° steps
+    
+    // 35% chance of animation (less overwhelming)
+    setIsAnimated(Math.random() > 0.65);
+    
+    // More reasonable animation speed range
+    setAnimationSpeed(Math.floor(Math.random() * 8) + 7); // 7-15
+    
+    setAnimationDirection(['normal', 'reverse', 'alternate', 'alternate-reverse'][Math.floor(Math.random() * 4)]);
+  };
+
   // Reset function
   const reset = () => {
     setSelectedPattern('stripes');
-    setSelectedGradient('linear-diagonal');
-    setPatternColor('#3b82f6');
-    setGradientColor1('#ff6b6b');
-    setGradientColor2('#4ecdc4');
-    setGradientColor3('#45b7d1');
-    setGradientColor4('#96ceb4');
-    setPatternOpacity(60);
-    setGradientOpacity(100);
-    setSpacing(20);
-    setGradientAngle(45);
+    setSelectedGradient('linear-vertical');
+    setPatternColor('#feca57');
+    setGradientColor1('#a55eea');
+    setGradientColor2('#0abde3');
+    setGradientColor3('#54a0ff');
+    setGradientColor4('#feca57');
+    setPatternOpacity(63);
+    setGradientOpacity(54);
+    setSpacing(5);
+    setGradientAngle(0);
     setIsAnimated(false);
     setAnimationSpeed(5);
     setAnimationDirection('normal');
   };
 
-  // Generate background style
+  // Generate background style with improved rendering
   const backgroundStyle = useMemo(() => {
     const currentPattern = patterns.find(p => p.id === selectedPattern);
     const currentGradient = gradients.find(g => g.id === selectedGradient);
@@ -107,7 +167,7 @@ export function useHybridGenerator() {
       gradient = gradient.replace(/\d+deg/, `${gradientAngle}deg`);
     }
 
-    // Generate pattern (foreground layer) - always with transparent background
+    // Generate pattern (foreground layer) with transparency
     const doubleSpacing = spacing * 2;
     let pattern = currentPattern.basePattern
       .replace(/{fg}/g, patternColor)
@@ -115,33 +175,58 @@ export function useHybridGenerator() {
       .replace(/{spacing}/g, spacing.toString())
       .replace(/{doubleSpacing}/g, doubleSpacing.toString());
 
+    // Apply pattern opacity by modifying the pattern color
+    const patternWithOpacity = pattern.replace(
+      new RegExp(patternColor, 'g'), 
+      patternColor + Math.round(patternOpacity * 2.55).toString(16).padStart(2, '0')
+    );
+
     const style: React.CSSProperties = {
-      backgroundColor: '#ffffff', // Always white background
-      // Gradient as background, pattern as overlay
-      backgroundImage: `${pattern}, ${gradient}`,
+      backgroundColor: '#ffffff',
+      // Pattern as overlay, gradient as background
+      backgroundImage: `${patternWithOpacity}, ${gradient}`,
+      opacity: gradientOpacity / 100,
       transition: 'all 0.3s ease-in-out',
+      // Improved rendering properties
+      backgroundAttachment: 'fixed',
+      backgroundRepeat: 'repeat, no-repeat',
+      backgroundPosition: 'center, center',
+      // Prevent rendering artifacts
+      isolation: 'isolate',
+      transform: 'translateZ(0)',
+      willChange: 'background-image, background-position, transform',
+      // Ensure proper color rendering
+      imageRendering: 'crisp-edges',
+      WebkitImageRendering: 'crisp-edges',
     };
 
     // Add background size for certain patterns
     if (selectedPattern === 'dots' || selectedPattern === 'grid') {
-      style.backgroundSize = `${spacing}px ${spacing}px, 400% 400%`;
+      style.backgroundSize = `${spacing}px ${spacing}px, 100% 100%`;
     } else if (selectedPattern === 'hexagon' || selectedPattern === 'circles') {
-      style.backgroundSize = `${spacing * 2}px ${spacing * 2}px, 400% 400%`;
+      style.backgroundSize = `${spacing * 2}px ${spacing * 2}px, 100% 100%`;
     } else {
-      style.backgroundSize = 'auto, 400% 400%';
+      style.backgroundSize = 'auto, 100% 100%';
     }
 
-    // Apply opacity
-    style.opacity = gradientOpacity / 100;
-
-    // Add animation if enabled - make it continuous
+    // Add animation if enabled - improved for smoother rendering
     if (isAnimated) {
       const duration = 21 - animationSpeed;
       if (currentGradient.type === 'conic-gradient') {
-        style.animation = `hybridMoveConic ${duration}s linear infinite ${animationDirection}`;
+        style.animation = `gradientSpin ${duration}s linear infinite ${animationDirection}`;
       } else {
-        style.animation = `hybridMove ${duration}s linear infinite ${animationDirection}`;
+        style.animation = `gradientShift ${duration}s ease-in-out infinite ${animationDirection}`;
+        // Update background size for animation
+        if (selectedPattern === 'dots' || selectedPattern === 'grid') {
+          style.backgroundSize = `${spacing}px ${spacing}px, 400% 400%`;
+        } else if (selectedPattern === 'hexagon' || selectedPattern === 'circles') {
+          style.backgroundSize = `${spacing * 2}px ${spacing * 2}px, 400% 400%`;
+        } else {
+          style.backgroundSize = 'auto, 400% 400%';
+        }
       }
+      // Optimize for animation
+      style.willChange = 'background-position, transform';
     }
 
     return style;
@@ -166,7 +251,7 @@ export function useHybridGenerator() {
       gradient = gradient.replace(/\d+deg/, `${gradientAngle}deg`);
     }
 
-    // Generate pattern
+    // Generate pattern with opacity
     const doubleSpacing = spacing * 2;
     let pattern = currentPattern.basePattern
       .replace(/{fg}/g, patternColor)
@@ -174,71 +259,61 @@ export function useHybridGenerator() {
       .replace(/{spacing}/g, spacing.toString())
       .replace(/{doubleSpacing}/g, doubleSpacing.toString());
 
+    // Apply pattern opacity
+    const patternWithOpacity = pattern.replace(
+      new RegExp(patternColor, 'g'), 
+      patternColor + Math.round(patternOpacity * 2.55).toString(16).padStart(2, '0')
+    );
+
     let css = `.hybrid-background {
   background-color: #ffffff;
-  /* Pattern overlay, gradient background */
-  background-image: ${pattern}, ${gradient};`;
+  background-image: ${patternWithOpacity}, ${gradient};`;
 
     // Add background size for certain patterns
     if (selectedPattern === 'dots' || selectedPattern === 'grid') {
-      css += `\n  background-size: ${spacing}px ${spacing}px, 400% 400%;`;
+      css += `\n  background-size: ${spacing}px ${spacing}px, 100% 100%;`;
     } else if (selectedPattern === 'hexagon' || selectedPattern === 'circles') {
-      css += `\n  background-size: ${spacing * 2}px ${spacing * 2}px, 400% 400%;`;
+      css += `\n  background-size: ${spacing * 2}px ${spacing * 2}px, 100% 100%;`;
     } else {
-      css += `\n  background-size: auto, 400% 400%;`;
+      css += `\n  background-size: auto, 100% 100%;`;
     }
 
     css += `\n  opacity: ${gradientOpacity / 100};`;
     css += `\n  transition: all 0.3s ease-in-out;`;
+    css += `\n  background-attachment: fixed;`;
+    css += `\n  background-repeat: repeat, no-repeat;`;
+    css += `\n  background-position: center, center;`;
 
     if (isAnimated) {
       const duration = 21 - animationSpeed;
       if (currentGradient.type === 'conic-gradient') {
-        css += `\n  animation: hybridMoveConic ${duration}s linear infinite ${animationDirection};`;
+        css += `\n  animation: gradientSpin ${duration}s linear infinite ${animationDirection};`;
       } else {
-        css += `\n  animation: hybridMove ${duration}s linear infinite ${animationDirection};`;
+        css += `\n  animation: gradientShift ${duration}s ease-in-out infinite ${animationDirection};`;
+        // Update background size for animation
+        if (selectedPattern === 'dots' || selectedPattern === 'grid') {
+          css += `\n  background-size: ${spacing}px ${spacing}px, 400% 400%;`;
+        } else if (selectedPattern === 'hexagon' || selectedPattern === 'circles') {
+          css += `\n  background-size: ${spacing * 2}px ${spacing * 2}px, 400% 400%;`;
+        } else {
+          css += `\n  background-size: auto, 400% 400%;`;
+        }
       }
     }
 
     css += `\n}`;
 
-    // Add pattern opacity using pseudo-element
-    css += `\n\n.hybrid-background::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-image: ${pattern};`;
-
-    if (selectedPattern === 'dots' || selectedPattern === 'grid') {
-      css += `\n  background-size: ${spacing}px ${spacing}px;`;
-    } else if (selectedPattern === 'hexagon' || selectedPattern === 'circles') {
-      css += `\n  background-size: ${spacing * 2}px ${spacing * 2}px;`;
-    }
-
-    css += `\n  opacity: ${patternOpacity / 100};
-  pointer-events: none;
-}`;
-
     if (isAnimated) {
       if (currentGradient.type === 'conic-gradient') {
-        css += `\n\n@keyframes hybridMoveConic {
-  0% { 
-    background-position: 0 0, center;
-    transform: rotate(0deg);
-  }
-  100% { 
-    background-position: ${spacing}px ${spacing}px, center;
-    transform: rotate(360deg);
-  }
+        css += `\n\n@keyframes gradientSpin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }`;
       } else {
-        css += `\n\n@keyframes hybridMove {
-  0% { background-position: 0 0, 0% 50%; }
-  50% { background-position: ${spacing}px ${spacing}px, 100% 50%; }
-  100% { background-position: 0 0, 0% 50%; }
+        css += `\n\n@keyframes gradientShift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
 }`;
       }
     }
@@ -279,6 +354,7 @@ export function useHybridGenerator() {
     setIsAnimated,
     setAnimationSpeed,
     setAnimationDirection,
+    generateRandom,
     reset,
   };
 }

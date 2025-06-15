@@ -26,7 +26,12 @@ export function useGradientGenerator() {
   // Load gradients from JSON
   useEffect(() => {
     fetch('/data/gradients.json')
-      .then(response => response.json())
+      .then(response => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+      })
       .then(data => {
         setGradients(data.gradients);
       })
@@ -45,6 +50,49 @@ export function useGradientGenerator() {
       });
   }, []);
 
+  // Generate random gradient with improved randomization
+  const generateRandom = () => {
+    if (gradients.length === 0) return;
+    
+    const randomGradient = gradients[Math.floor(Math.random() * gradients.length)];
+    
+    // More balanced color palette
+    const vibrantColors = [
+      '#ff6b6b', '#4ecdc4', '#45b7d1', '#96ceb4', '#feca57', '#ff9ff3', 
+      '#54a0ff', '#5f27cd', '#00d2d3', '#ff9f43', '#10ac84', '#ee5a24', 
+      '#0abde3', '#3867d6', '#8854d0', '#a55eea', '#26de81', '#fd79a8',
+      '#fdcb6e', '#6c5ce7', '#74b9ff', '#00b894', '#e17055', '#81ecec'
+    ];
+    
+    const pastelColors = [
+      '#ffeaa7', '#fab1a0', '#ff7675', '#fd79a8', '#fdcb6e', '#e17055',
+      '#74b9ff', '#0984e3', '#00b894', '#00cec9', '#6c5ce7', '#a29bfe',
+      '#ddd6fe', '#fecaca', '#fed7d7', '#d1fae5', '#dbeafe', '#e0e7ff'
+    ];
+    
+    // Mix vibrant and pastel colors for better balance
+    const allColors = [...vibrantColors, ...pastelColors];
+    
+    setSelectedGradient(randomGradient.id);
+    setColor1(allColors[Math.floor(Math.random() * allColors.length)]);
+    setColor2(allColors[Math.floor(Math.random() * allColors.length)]);
+    setColor3(allColors[Math.floor(Math.random() * allColors.length)]);
+    setColor4(allColors[Math.floor(Math.random() * allColors.length)]);
+    
+    // More balanced opacity range (70-95% instead of 50-100%)
+    setOpacity(Math.floor(Math.random() * 26) + 70);
+    
+    setAngle(Math.floor(Math.random() * 24) * 15); // 0-360 in 15° steps
+    
+    // 30% chance of animation (less overwhelming)
+    setIsAnimated(Math.random() > 0.7);
+    
+    // More reasonable animation speed range
+    setAnimationSpeed(Math.floor(Math.random() * 8) + 6); // 6-14
+    
+    setAnimationDirection(['normal', 'reverse', 'alternate', 'alternate-reverse'][Math.floor(Math.random() * 4)]);
+  };
+
   // Reset function
   const reset = () => {
     setSelectedGradient('conic-center');
@@ -59,9 +107,9 @@ export function useGradientGenerator() {
     setAnimationDirection('normal');
   };
 
-  // Generate background style
+  // Generate background style with improved rendering
   const backgroundStyle = useMemo(() => {
-    const currentGradient = gradients.find(g => g.id === selectedGradient);
+    const currentGradient = gradients.find((g: Gradient) => g.id === selectedGradient);
     if (!currentGradient) return { backgroundColor: '#ffffff' };
 
     let pattern = currentGradient.basePattern
@@ -76,7 +124,7 @@ export function useGradientGenerator() {
     }
 
     const style: React.CSSProperties = {
-      backgroundColor: '#ffffff', // Always white background
+      backgroundColor: '#ffffff',
       backgroundImage: pattern,
       opacity: opacity / 100,
       transition: 'all 0.3s ease-in-out',
@@ -93,15 +141,17 @@ export function useGradientGenerator() {
       imageRendering: 'crisp-edges', // Use standard property only
     };
 
-    // Add animation if enabled - make it continuous
+    // Add animation if enabled - improved for smoother rendering
     if (isAnimated) {
-      const duration = 21 - animationSpeed; // Convert speed (1-20) to duration (20s-1s)
+      const duration = 21 - animationSpeed;
       if (currentGradient.type === 'conic-gradient') {
         style.animation = `gradientSpin ${duration}s linear infinite ${animationDirection}`;
       } else {
         style.animation = `gradientShift ${duration}s ease-in-out infinite ${animationDirection}`;
-        style.backgroundSize = '400% 400%'; // Larger size for smoother animation
+        style.backgroundSize = '400% 400%';
       }
+      // Optimize for animation
+      style.willChange = 'background-position, transform';
     }
 
     return style;
@@ -109,7 +159,7 @@ export function useGradientGenerator() {
 
   // Generate CSS code
   const cssCode = useMemo(() => {
-    const currentGradient = gradients.find(g => g.id === selectedGradient);
+    const currentGradient = gradients.find((g: Gradient) => g.id === selectedGradient);
     if (!currentGradient) return '';
 
     let pattern = currentGradient.basePattern
@@ -129,6 +179,10 @@ export function useGradientGenerator() {
 
     css += `\n  opacity: ${opacity / 100};`;
     css += `\n  transition: all 0.3s ease-in-out;`;
+    css += `\n  background-attachment: fixed;`;
+    css += `\n  background-repeat: no-repeat;`;
+    css += `\n  background-position: center;`;
+    css += `\n  background-size: 100% 100%;`;
 
     if (isAnimated) {
       const duration = 21 - animationSpeed;
@@ -184,6 +238,7 @@ export function useGradientGenerator() {
     setIsAnimated,
     setAnimationSpeed,
     setAnimationDirection,
+    generateRandom,
     reset,
   };
 }

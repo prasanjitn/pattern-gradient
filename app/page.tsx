@@ -5,15 +5,14 @@ import Hero from '@/components/Hero';
 import ControlsPanel from '@/components/ControlsPanel';
 import GradientControlsPanel from '@/components/GradientControlsPanel';
 import HybridControlsPanel from '@/components/HybridControlsPanel';
-import CssOutput from '@/components/CssOutput';
-import ThemeToggle from '@/components/ThemeToggle';
 import ModeToggle from '@/components/ModeToggle';
+import SocialIcons from '@/components/SocialIcons';
 import { usePatternGenerator } from '@/hooks/usePatternGenerator';
 import { useGradientGenerator } from '@/hooks/useGradientGenerator';
 import { useHybridGenerator } from '@/hooks/useHybridGenerator';
 
 export default function Home() {
-  const [mode, setMode] = useState<'pattern' | 'gradient' | 'hybrid'>('gradient');
+  const [mode, setMode] = useState<'pattern' | 'gradient' | 'hybrid'>('pattern'); // Changed default to pattern
 
   const patternHook = usePatternGenerator();
   const gradientHook = useGradientGenerator();
@@ -21,13 +20,6 @@ export default function Home() {
 
   // Initialize theme on mount
   useEffect(() => {
-    const savedTheme = localStorage.getItem('theme');
-    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    
-    if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
-      document.documentElement.classList.add('dark');
-    }
-
     // Add animation keyframes to document
     const style = document.createElement('style');
     style.textContent = `
@@ -113,13 +105,15 @@ export default function Home() {
     }
   };
 
+  const currentBackgroundStyle = getCurrentBackgroundStyle();
+
   return (
     <main className="min-h-screen bg-white">
-      <ThemeToggle />
-      <ModeToggle mode={mode} onModeChange={setMode} />
+      <ModeToggle mode={mode} onModeChange={setMode} backgroundStyle={currentBackgroundStyle} />
+      <SocialIcons backgroundStyle={currentBackgroundStyle} />
       
       <Hero 
-        backgroundStyle={getCurrentBackgroundStyle()}
+        backgroundStyle={currentBackgroundStyle}
         isAnimated={getCurrentIsAnimated()}
       >
         {mode === 'pattern' && (
@@ -133,6 +127,7 @@ export default function Home() {
             isAnimated={patternHook.isAnimated}
             animationSpeed={patternHook.animationSpeed}
             animationDirection={patternHook.animationDirection}
+            cssCode={patternHook.cssCode}
             onPatternChange={patternHook.setSelectedPattern}
             onForegroundColorChange={patternHook.setForegroundColor}
             onBackgroundColorChange={patternHook.setBackgroundColor}
@@ -142,6 +137,7 @@ export default function Home() {
             onAnimationSpeedChange={patternHook.setAnimationSpeed}
             onAnimationDirectionChange={patternHook.setAnimationDirection}
             onReset={patternHook.reset}
+            onGenerateRandom={patternHook.generateRandom}
           />
         )}
 
@@ -158,6 +154,7 @@ export default function Home() {
             isAnimated={gradientHook.isAnimated}
             animationSpeed={gradientHook.animationSpeed}
             animationDirection={gradientHook.animationDirection}
+            cssCode={gradientHook.cssCode}
             onGradientChange={gradientHook.setSelectedGradient}
             onColor1Change={gradientHook.setColor1}
             onColor2Change={gradientHook.setColor2}
@@ -169,6 +166,7 @@ export default function Home() {
             onAnimationSpeedChange={gradientHook.setAnimationSpeed}
             onAnimationDirectionChange={gradientHook.setAnimationDirection}
             onReset={gradientHook.reset}
+            onGenerateRandom={gradientHook.generateRandom}
           />
         )}
 
@@ -190,6 +188,7 @@ export default function Home() {
             isAnimated={hybridHook.isAnimated}
             animationSpeed={hybridHook.animationSpeed}
             animationDirection={hybridHook.animationDirection}
+            cssCode={hybridHook.cssCode}
             onPatternChange={hybridHook.setSelectedPattern}
             onGradientChange={hybridHook.setSelectedGradient}
             onPatternColorChange={hybridHook.setPatternColor}
@@ -205,11 +204,10 @@ export default function Home() {
             onAnimationSpeedChange={hybridHook.setAnimationSpeed}
             onAnimationDirectionChange={hybridHook.setAnimationDirection}
             onReset={hybridHook.reset}
+            onGenerateRandom={hybridHook.generateRandom}
           />
         )}
       </Hero>
-      
-      <CssOutput cssCode={getCurrentCssCode()} />
     </main>
   );
 }
