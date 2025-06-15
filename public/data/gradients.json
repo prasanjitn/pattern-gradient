@@ -1,0 +1,60 @@
+{
+  "gradients": [
+    {
+      "id": "linear-horizontal",
+      "name": "Linear Horizontal",
+      "type": "linear-gradient",
+      "description": "Left to right gradient",
+      "basePattern": "linear-gradient(90deg, {color1}, {color2}, {color3}, {color4})"
+    },
+    {
+      "id": "linear-vertical",
+      "name": "Linear Vertical",
+      "type": "linear-gradient",
+      "description": "Top to bottom gradient",
+      "basePattern": "linear-gradient(180deg, {color1}, {color2}, {color3}, {color4})"
+    },
+    {
+      "id": "linear-diagonal",
+      "name": "Linear Diagonal",
+      "type": "linear-gradient",
+      "description": "Diagonal gradient",
+      "basePattern": "linear-gradient(45deg, {color1}, {color2}, {color3}, {color4})"
+    },
+    {
+      "id": "radial-center",
+      "name": "Radial Center",
+      "type": "radial-gradient",
+      "description": "Radial from center",
+      "basePattern": "radial-gradient(circle at center, {color1}, {color2}, {color3}, {color4})"
+    },
+    {
+      "id": "radial-corner",
+      "name": "Radial Corner",
+      "type": "radial-gradient",
+      "description": "Radial from corner",
+      "basePattern": "radial-gradient(circle at top left, {color1}, {color2}, {color3}, {color4})"
+    },
+    {
+      "id": "conic-center",
+      "name": "Conic Center",
+      "type": "conic-gradient",
+      "description": "Conic gradient from center",
+      "basePattern": "conic-gradient(from 0deg at center, {color1}, {color2}, {color3}, {color4}, {color1})"
+    },
+    {
+      "id": "sunset",
+      "name": "Sunset Blend",
+      "type": "linear-gradient",
+      "description": "Multi-directional sunset",
+      "basePattern": "linear-gradient(135deg, {color1} 0%, {color2} 25%, {color3} 75%, {color4} 100%)"
+    },
+    {
+      "id": "rainbow",
+      "name": "Rainbow Arc",
+      "type": "conic-gradient",
+      "description": "Rainbow spectrum",
+      "basePattern": "conic-gradient(from 90deg at center, {color1}, {color2}, {color3}, {color4}, {color1})"
+    }
+  ]
+}
