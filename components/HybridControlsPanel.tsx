@@ -171,9 +171,9 @@ export default function HybridControlsPanel({
       </CardHeader>
       
       {!isCollapsed && (
-        <CardContent className="grid grid-cols-1 md:grid-cols-3 gap-6 p-6">
-          {/* Pattern Selection */}
-          <div className="space-y-4">
+        <CardContent className="grid grid-cols-1 md:grid-cols-3 gap-6 p-6 min-h-[320px]">
+          {/* Pattern Controls */}
+          <div className="space-y-4 flex flex-col">
             <Label className="text-sm font-semibold flex items-center gap-2 text-black">
               <Sparkles className="h-4 w-4 text-black" />
               Pattern Type
@@ -246,7 +246,7 @@ export default function HybridControlsPanel({
           </div>
 
           {/* Gradient Controls */}
-          <div className="space-y-4">
+          <div className="space-y-4 flex flex-col">
             <Label className="text-sm font-semibold flex items-center gap-2 text-black">
               <Palette className="h-4 w-4 text-black" />
               Gradient Type
@@ -268,7 +268,7 @@ export default function HybridControlsPanel({
             </Select>
 
             {/* Gradient Colors */}
-            <div className="space-y-3">
+            <div className="space-y-3 flex-1">
               <div className="grid grid-cols-2 gap-2">
                 <div className="space-y-1">
                   <div className="flex items-center gap-1">
@@ -340,26 +340,32 @@ export default function HybridControlsPanel({
               </div>
             </div>
 
-            {/* Gradient Angle Control (for linear gradients) */}
-            {showAngleControl && (
-              <div className="space-y-3">
-                <div className="flex items-center justify-between">
-                  <Label className="text-sm font-semibold flex items-center gap-2 text-black">
-                    <RotateCw className="h-4 w-4 text-black" />
-                    Angle
-                  </Label>
-                  <span className="text-sm text-gray-700">{gradientAngle}°</span>
+            {/* Gradient Angle Control (for linear gradients) - Fixed Height Container */}
+            <div className="space-y-3 min-h-[60px]">
+              {showAngleControl ? (
+                <>
+                  <div className="flex items-center justify-between">
+                    <Label className="text-sm font-semibold flex items-center gap-2 text-black">
+                      <RotateCw className="h-4 w-4 text-black" />
+                      Angle
+                    </Label>
+                    <span className="text-sm text-gray-700">{gradientAngle}°</span>
+                  </div>
+                  <Slider
+                    value={[gradientAngle]}
+                    onValueChange={(value) => onGradientAngleChange(value[0])}
+                    min={0}
+                    max={360}
+                    step={15}
+                    className="w-full"
+                  />
+                </>
+              ) : (
+                <div className="opacity-50">
+                  <p className="text-sm text-gray-600">Angle control available for linear gradients</p>
                 </div>
-                <Slider
-                  value={[gradientAngle]}
-                  onValueChange={(value) => onGradientAngleChange(value[0])}
-                  min={0}
-                  max={360}
-                  step={15}
-                  className="w-full"
-                />
-              </div>
-            )}
+              )}
+            </div>
 
             {/* Gradient Opacity */}
             <div className="space-y-3">
@@ -377,8 +383,8 @@ export default function HybridControlsPanel({
             </div>
           </div>
 
-          {/* Animation Controls */}
-          <div className="space-y-4">
+          {/* Animation Controls - Fixed Height */}
+          <div className="space-y-4 flex flex-col">
             <div className="flex items-center justify-between">
               <div>
                 <Label className="text-sm font-semibold text-black">Animated Hybrid</Label>
@@ -390,47 +396,54 @@ export default function HybridControlsPanel({
               />
             </div>
 
-            {isAnimated && (
-              <div className="space-y-4 pt-2 border-t border-white/10">
-                {/* Animation Speed */}
-                <div className="space-y-3">
-                  <div className="flex items-center justify-between">
-                    <Label className="text-sm font-semibold flex items-center gap-2 text-black">
-                      <Zap className="h-4 w-4 text-black" />
-                      Speed
-                    </Label>
-                    <span className="text-sm text-gray-700">{animationSpeed}/20</span>
+            {/* Animation Controls Container - Always takes same space */}
+            <div className="flex-1 min-h-[180px]">
+              {isAnimated ? (
+                <div className="space-y-4 pt-2 border-t border-white/10">
+                  {/* Animation Speed */}
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between">
+                      <Label className="text-sm font-semibold flex items-center gap-2 text-black">
+                        <Zap className="h-4 w-4 text-black" />
+                        Speed
+                      </Label>
+                      <span className="text-sm text-gray-700">{animationSpeed}/20</span>
+                    </div>
+                    <Slider
+                      value={[animationSpeed]}
+                      onValueChange={(value) => onAnimationSpeedChange(value[0])}
+                      min={1}
+                      max={20}
+                      step={1}
+                      className="w-full"
+                    />
                   </div>
-                  <Slider
-                    value={[animationSpeed]}
-                    onValueChange={(value) => onAnimationSpeedChange(value[0])}
-                    min={1}
-                    max={20}
-                    step={1}
-                    className="w-full"
-                  />
-                </div>
 
-                {/* Animation Direction */}
-                <div className="space-y-2">
-                  <Label className="text-sm font-semibold flex items-center gap-2 text-black">
-                    <Navigation className="h-4 w-4 text-black" />
-                    Direction
-                  </Label>
-                  <Select value={animationDirection} onValueChange={onAnimationDirectionChange}>
-                    <SelectTrigger className="bg-white/10 backdrop-blur-sm border-white/20 text-black">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="normal">Normal</SelectItem>
-                      <SelectItem value="reverse">Reverse</SelectItem>
-                      <SelectItem value="alternate">Alternate</SelectItem>
-                      <SelectItem value="alternate-reverse">Alternate Reverse</SelectItem>
-                    </SelectContent>
-                  </Select>
+                  {/* Animation Direction */}
+                  <div className="space-y-2">
+                    <Label className="text-sm font-semibold flex items-center gap-2 text-black">
+                      <Navigation className="h-4 w-4 text-black" />
+                      Direction
+                    </Label>
+                    <Select value={animationDirection} onValueChange={onAnimationDirectionChange}>
+                      <SelectTrigger className="bg-white/10 backdrop-blur-sm border-white/20 text-black">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="normal">Normal</SelectItem>
+                        <SelectItem value="reverse">Reverse</SelectItem>
+                        <SelectItem value="alternate">Alternate</SelectItem>
+                        <SelectItem value="alternate-reverse">Alternate Reverse</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
                 </div>
-              </div>
-            )}
+              ) : (
+                <div className="pt-2 border-t border-white/10 opacity-50">
+                  <p className="text-sm text-gray-600">Enable animation to access speed and direction controls</p>
+                </div>
+              )}
+            </div>
           </div>
         </CardContent>
       )}
