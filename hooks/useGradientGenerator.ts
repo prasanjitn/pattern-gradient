@@ -90,7 +90,7 @@ export function useGradientGenerator() {
       transform: 'translateZ(0)',
       willChange: 'background-image, background-position, transform',
       // Ensure proper color rendering
-      imageRendering: 'crisp-edges', // Replace WebkitImageRendering
+      imageRendering: 'crisp-edges', // Use standard property only
     };
 
     // Add animation if enabled - make it continuous
