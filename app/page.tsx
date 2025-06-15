@@ -6,6 +6,7 @@ import ControlsPanel from '@/components/ControlsPanel';
 import GradientControlsPanel from '@/components/GradientControlsPanel';
 import HybridControlsPanel from '@/components/HybridControlsPanel';
 import ModeToggle from '@/components/ModeToggle';
+import SocialIcons from '@/components/SocialIcons';
 import { usePatternGenerator } from '@/hooks/usePatternGenerator';
 import { useGradientGenerator } from '@/hooks/useGradientGenerator';
 import { useHybridGenerator } from '@/hooks/useHybridGenerator';
@@ -107,6 +108,7 @@ export default function Home() {
   return (
     <main className="min-h-screen bg-white">
       <ModeToggle mode={mode} onModeChange={setMode} />
+      <SocialIcons />
       
       <Hero 
         backgroundStyle={getCurrentBackgroundStyle()}
